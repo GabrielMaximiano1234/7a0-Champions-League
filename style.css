@@ -635,20 +635,17 @@ header {
 }
 
 .cards-selection-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
   margin-bottom: 15px;
 }
 
-@media (max-width: 480px) {
-  .cards-selection-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 .selection-card-container {
-  aspect-ratio: 0.72;
+  width: 90px;
+  height: 125px;
+  flex: 0 0 90px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2);
   border-radius: 8px;
@@ -666,20 +663,20 @@ header {
 .selection-card-container .player-card {
   height: 100%;
   width: 100%;
-  padding: 10px;
+  padding: 6px;
 }
 
 .selection-card-container .player-card .card-photo {
-  font-size: 2.5rem;
-  height: 55px;
+  font-size: 1.8rem;
+  height: 38px;
 }
 
 .selection-card-container .player-card .name {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
 }
 
 .selection-card-container .player-card .team-name {
-  font-size: 0.6rem;
+  font-size: 0.5rem;
 }
 
 /* Info Summary Panel */

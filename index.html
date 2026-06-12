@@ -186,6 +186,30 @@
               <span class="team-score-sub" id="sim-opp-rating">Rating: --</span>
             </div>
           </div>
+          
+          <!-- Chronology of goals (Rule 2) -->
+          <div class="match-goals-timeline" id="sim-goals-timeline" style="display: flex; justify-content: space-between; font-size: 0.75rem; margin: -5px auto 15px; width: 90%; color: var(--color-text-muted); opacity: 0.9; font-family: inherit; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 5px; min-height: 20px;">
+            <div class="goals-left" id="sim-goals-left" style="text-align: left; flex: 1; padding-right: 10px;"></div>
+            <div class="goals-right" id="sim-goals-right" style="text-align: right; flex: 1; padding-left: 10px;"></div>
+          </div>
+
+          <!-- Penalty Shootout Display (Rule 3) -->
+          <div class="penalty-shootout-container" id="sim-penalty-container" style="display: none; text-align: center; margin: 15px auto; width: 90%; padding: 15px; border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; background: rgba(5, 10, 48, 0.95); box-shadow: 0 0 20px rgba(0, 240, 255, 0.2), 0 0 10px rgba(255, 215, 0, 0.1) inset;">
+            <h4 style="color: var(--color-secondary); margin: 0 0 10px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);">Disputa de Pênaltis</h4>
+            <div class="penalty-score" id="sim-penalty-score" style="font-size: 1.8rem; font-weight: 800; color: var(--color-secondary); margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);">0 - 0</div>
+            
+            <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <span style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-primary); letter-spacing: 0.5px;">Meu Time</span>
+                <div class="penalty-series" id="sim-penalty-user-series" style="display: flex; gap: 6px; font-size: 1.1rem; min-height: 24px; justify-content: center; align-items: center;"></div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <span style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-muted); letter-spacing: 0.5px;">Adversário</span>
+                <div class="penalty-series" id="sim-penalty-opp-series" style="display: flex; gap: 6px; font-size: 1.1rem; min-height: 24px; justify-content: center; align-items: center;"></div>
+              </div>
+            </div>
+            <div class="penalty-result" id="sim-penalty-result" style="font-size: 0.85rem; color: #fff; font-weight: bold; margin-top: 10px; letter-spacing: 0.5px; text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);"></div>
+          </div>
 
           <!-- Live Tactical adjustment buttons (Rule 3) -->
           <div class="live-tactics-container" id="live-tactics-panel">

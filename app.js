@@ -676,6 +676,15 @@ function setupMatch(round) {
   const logBox = document.getElementById("sim-log-box");
   logBox.innerHTML = `<div class="log-entry system-info">Aguardando o pontapé inicial...</div>`;
   
+  // Reset goals timeline and penalties container (Rule 2 & 3)
+  document.getElementById("sim-goals-left").innerHTML = "";
+  document.getElementById("sim-goals-right").innerHTML = "";
+  document.getElementById("sim-penalty-container").style.display = "none";
+  document.getElementById("sim-penalty-score").innerText = "0 - 0";
+  document.getElementById("sim-penalty-result").innerText = "";
+  document.getElementById("sim-penalty-user-series").innerHTML = "";
+  document.getElementById("sim-penalty-opp-series").innerHTML = "";
+  
   // Action button
   const actionBtn = document.getElementById("btn-action-match");
   actionBtn.innerHTML = `<span>Iniciar Partida</span>`;
@@ -808,6 +817,9 @@ function startMatchSimulation() {
   state.currentMatchMinute = 0;
   let userGoals = 0;
   let oppGoals = 0;
+  state.currentMatchGoals = [];
+  const userGoalList = [];
+  const oppGoalList = [];
   
   // Calculate simulation attributes
   const userAvgRating = parseInt(document.getElementById("roster-avg-rating").innerText) || 85;
@@ -877,6 +889,12 @@ function startMatchSimulation() {
         document.getElementById("sim-scoreboard").innerText = `${userGoals} - ${oppGoals}`;
         addLog(currentMinute, `⚽ GOOOL! Passe de ${midfielder.split(" ").pop()} para finalização certeira de ${attacker}!`, "goal-event");
         
+        // Store and display goal details (Rule 2)
+        const shortAttacker = attacker.split(" ").pop();
+        state.currentMatchGoals.push({ team: "user", author: attacker, minute: currentMinute });
+        userGoalList.push(`${shortAttacker} ${currentMinute}'`);
+        document.getElementById("sim-goals-left").innerHTML = "⚽ " + userGoalList.join(", ");
+        
         // Neon green goal flash (Super Poderes)
         triggerGoalFlash();
       } else {
@@ -896,6 +914,12 @@ function startMatchSimulation() {
         oppGoals++;
         document.getElementById("sim-scoreboard").innerText = `${userGoals} - ${oppGoals}`;
         addLog(currentMinute, `❌ GOL do ${state.currentMatchOpponentName.split(" ")[0]}! ${oppAttacker} se livra da marcação e fuzila sem chances de defesa.`, "goal-conceded");
+        
+        // Store and display goal details (Rule 2)
+        const shortOppAttacker = oppAttacker.split(" ").pop();
+        state.currentMatchGoals.push({ team: "opp", author: oppAttacker, minute: currentMinute });
+        oppGoalList.push(`${shortOppAttacker} ${currentMinute}'`);
+        document.getElementById("sim-goals-right").innerHTML = "⚽ " + oppGoalList.join(", ");
       } else {
         addLog(currentMinute, `🧤 Espetacular! ${oppAttacker} bate colocado no ângulo, mas ${userGK} voa para espalmar! Defesa incrível com ajuda de ${userDF.split(" ").pop()}.`, "save-event");
       }
@@ -1108,64 +1132,215 @@ function getGroupRank() {
 }
 
 function simulatePenalties(baseUserGoals, baseOppGoals) {
+  const container = document.getElementById("sim-penalty-container");
+  if (container) {
+    container.style.display = "block";
+  }
+  
+  const scoreEl = document.getElementById("sim-penalty-score");
+  if (scoreEl) scoreEl.innerText = "0 - 0";
+  
+  const resultEl = document.getElementById("sim-penalty-result");
+  if (resultEl) {
+    resultEl.innerText = "Preparando cobranças...";
+    resultEl.style.color = "#fff";
+  }
+  
+  const userSeriesEl = document.getElementById("sim-penalty-user-series");
+  const oppSeriesEl = document.getElementById("sim-penalty-opp-series");
+  
+  // Render initial 5 empty slots (gray/opacity circles)
+  if (userSeriesEl) {
+    userSeriesEl.innerHTML = Array(5).fill('<span class="penalty-dot" style="display:inline-block; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0 3px; font-size: 1.1rem; opacity: 0.3;">⚪</span>').join("");
+  }
+  if (oppSeriesEl) {
+    oppSeriesEl.innerHTML = Array(5).fill('<span class="penalty-dot" style="display:inline-block; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0 3px; font-size: 1.1rem; opacity: 0.3;">⚪</span>').join("");
+  }
+  
   const logBox = document.getElementById("sim-log-box");
   logBox.innerHTML = `<div class="log-entry system-info">⚔️ INÍCIO DA DECISÃO POR PÊNALTIS! Haja coração!</div>`;
   
+  const actionBtn = document.getElementById("btn-action-match");
+  actionBtn.disabled = true;
+  actionBtn.innerText = "Disputando Pênaltis...";
+
   let uScore = 0;
   let oScore = 0;
-  let round = 1;
+  let currentRound = 0; // 0, 1, 2, 3, 4 (first 5 rounds) then sudden death
+  let turn = "user"; // 'user' or 'opp'
   
   const myRoster = Object.values(state.draftRoster);
   const oppRoster = SQUADS_DATABASE[state.currentMatchOpponentName] || [];
   
-  const simulatePenaltyRound = () => {
-    // User Kicks
-    const userKicker = myRoster[Math.floor(Math.random() * myRoster.length)].name;
-    const oppGK = SQUADS_DATABASE[state.currentMatchOpponentName][0].name; // Opp Goleiro
+  // Sort or shuffle kickers to make it dynamic
+  const userKickers = [...myRoster].sort(() => Math.random() - 0.5);
+  const oppKickers = [...oppRoster].sort(() => Math.random() - 0.5);
+  
+  const userGK = myRoster.find(p => p.pos === "GOL")?.name || "Goleiro";
+  const oppGK = SQUADS_DATABASE[state.currentMatchOpponentName][0]?.name || "Goleiro"; // Opp GK is first in squad
+
+  const checkPenaltyEnd = () => {
+    const userKicksTaken = (turn === "opp") ? (currentRound + 1) : currentRound;
+    const oppKicksTaken = currentRound;
     
-    const userScored = Math.random() < 0.78; // 78% average penalty score
-    if (userScored) {
-      uScore++;
-      addLog(`P${round}`, `⚽ GOL! ${userKicker} cobra com categoria deslocando ${oppGK}!`, "goal-event");
+    const userKicksLeft = Math.max(0, 5 - userKicksTaken);
+    const oppKicksLeft = Math.max(0, 5 - oppKicksTaken);
+    
+    let canEnd = false;
+    
+    if (currentRound < 5) {
+      // Regular series (first 5 rounds)
+      if (uScore > oScore + oppKicksLeft) {
+        canEnd = true;
+      } else if (oScore > uScore + userKicksLeft) {
+        canEnd = true;
+      }
     } else {
-      addLog(`P${round}`, `❌ DEFENDEU! ${oppGK} voa no canto direito e espalma a cobrança de ${userKicker}!`, "save-event");
+      // Sudden death (after both have taken equal number of kicks)
+      if (userKicksTaken === oppKicksTaken && uScore !== oScore) {
+        canEnd = true;
+      }
     }
     
-    // Opponent Kicks
-    const oppKicker = oppRoster[Math.floor(Math.random() * oppRoster.length)].name;
-    const userGK = myRoster.find(p => p.pos === "GOL")?.name || "Goleiro";
-    
-    const oppScored = Math.random() < 0.72; // user defense strength slightly affects opp penalty
-    if (oppScored) {
-      oScore++;
-      addLog(`P${round}`, `⚽ GOL do ${state.currentMatchOpponentName.split(" ")[0]}! ${oppKicker} bate firme no meio do gol.`, "goal-conceded");
-    } else {
-      addLog(`P${round}`, `🧤 PEGOOOOU! ${userGK} defende a cobrança de ${oppKicker}! Muralha!`, "save-event");
+    if (canEnd) {
+      if (resultEl) {
+        resultEl.innerText = uScore > oScore ? "🏆 VITÓRIA NOS PÊNALTIS!" : "❌ DERROTA NOS PÊNALTIS!";
+        resultEl.style.color = uScore > oScore ? "var(--color-secondary)" : "#ff4d4d";
+        resultEl.style.textShadow = uScore > oScore ? "0 0 10px rgba(255,215,0,0.5)" : "0 0 10px rgba(255,77,77,0.5)";
+      }
+      setTimeout(() => {
+        resolvePenaltiesOutcome(uScore, oScore);
+      }, 2000);
+      return true;
     }
-    
-    round++;
-    
-    // Check win condition in penalties (best of 5, then sudden death)
-    const canEnd = (round > 5 && uScore !== oScore) || (round <= 5 && (Math.abs(uScore - oScore) > (6 - round)));
-    
-    if (canEnd && uScore !== oScore) {
-      clearInterval(penInterval);
-      resolvePenaltiesOutcome(uScore, oScore);
+    return false;
+  };
+
+  const runNextKick = () => {
+    if (turn === "user") {
+      if (resultEl) {
+        resultEl.innerText = "Seu time vai cobrar...";
+        resultEl.style.color = "var(--color-primary)";
+      }
+      
+      setTimeout(() => {
+        const kicker = userKickers[currentRound % userKickers.length].name;
+        // 78% goal chance
+        const userScored = Math.random() < 0.78;
+        
+        const userDots = userSeriesEl.querySelectorAll(".penalty-dot");
+        if (currentRound >= userDots.length) {
+          userSeriesEl.insertAdjacentHTML('beforeend', '<span class="penalty-dot" style="display:inline-block; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0 3px; font-size: 1.1rem; opacity: 0.3;">⚪</span>');
+        }
+        
+        const targetDot = userSeriesEl.querySelectorAll(".penalty-dot")[currentRound];
+        
+        if (userScored) {
+          uScore++;
+          if (targetDot) {
+            targetDot.innerHTML = "🟢";
+            targetDot.style.opacity = "1";
+            targetDot.style.transform = "scale(1.3)";
+          }
+          if (scoreEl) scoreEl.innerText = `${uScore} - ${oScore}`;
+          addLog(`P${currentRound + 1}`, `⚽ GOL! ${kicker} bate no canto oposto de ${oppGK} com muita calma!`, "goal-event");
+          if (resultEl) {
+            resultEl.innerText = "⚽ GOL DO SEU TIME!";
+            resultEl.style.color = "var(--color-secondary)";
+          }
+        } else {
+          if (targetDot) {
+            targetDot.innerHTML = "❌";
+            targetDot.style.opacity = "1";
+            targetDot.style.transform = "scale(1.3)";
+          }
+          addLog(`P${currentRound + 1}`, `❌ DEFENDEU! ${oppGK} adivinha o canto e faz bela defesa no chute de ${kicker}!`, "save-event");
+          if (resultEl) {
+            resultEl.innerText = "❌ NA TRAVE / DEFENDEU!";
+            resultEl.style.color = "#ff4d4d";
+          }
+        }
+        
+        turn = "opp";
+        
+        if (checkPenaltyEnd()) return;
+        
+        setTimeout(runNextKick, 1800);
+      }, 1500);
+    } else {
+      if (resultEl) {
+        resultEl.innerText = "Adversário vai cobrar...";
+        resultEl.style.color = "#ff8800";
+      }
+      
+      setTimeout(() => {
+        const kicker = oppKickers[currentRound % oppKickers.length].name;
+        // 72% goal chance for opponent (slight user GK strength help)
+        const oppScored = Math.random() < 0.72;
+        
+        const oppDots = oppSeriesEl.querySelectorAll(".penalty-dot");
+        if (currentRound >= oppDots.length) {
+          oppSeriesEl.insertAdjacentHTML('beforeend', '<span class="penalty-dot" style="display:inline-block; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0 3px; font-size: 1.1rem; opacity: 0.3;">⚪</span>');
+        }
+        
+        const targetDot = oppSeriesEl.querySelectorAll(".penalty-dot")[currentRound];
+        
+        if (oppScored) {
+          oScore++;
+          if (targetDot) {
+            targetDot.innerHTML = "🟢";
+            targetDot.style.opacity = "1";
+            targetDot.style.transform = "scale(1.3)";
+          }
+          if (scoreEl) scoreEl.innerText = `${uScore} - ${oScore}`;
+          addLog(`P${currentRound + 1}`, `❌ Gol do adversário! ${kicker} desloca ${userGK} com categoria.`, "goal-conceded");
+          if (resultEl) {
+            resultEl.innerText = "⚽ GOL DO ADVERSÁRIO!";
+            resultEl.style.color = "#ff4d4d";
+          }
+        } else {
+          if (targetDot) {
+            targetDot.innerHTML = "❌";
+            targetDot.style.opacity = "1";
+            targetDot.style.transform = "scale(1.3)";
+          }
+          addLog(`P${currentRound + 1}`, `🧤 DEFENDEU!!! ${userGK} brilha e faz uma defesa espetacular no chute de ${kicker}!`, "save-event");
+          if (resultEl) {
+            resultEl.innerText = "🧤 DEFESA SENSACIONAL!";
+            resultEl.style.color = "var(--color-primary)";
+          }
+        }
+        
+        currentRound++;
+        turn = "user";
+        
+        if (checkPenaltyEnd()) return;
+        
+        setTimeout(runNextKick, 1800);
+      }, 1500);
     }
   };
   
-  const penInterval = setInterval(simulatePenaltyRound, 800);
+  // Start the shootout with a small delay
+  setTimeout(runNextKick, 1500);
 }
 
 function resolvePenaltiesOutcome(uScore, oScore) {
   const actionBtn = document.getElementById("btn-action-match");
   actionBtn.disabled = false;
   
+  const oppNameShort = state.currentMatchOpponentName.split(" ")[0];
+  const penaltyResultEl = document.getElementById("sim-penalty-result");
+  
   if (uScore > oScore) {
     state.tournamentWins++;
     updateTournamentUI();
     
-    addLog("PEN", `🏆 FIM DE PAPO! Ganhamos a disputa por ${uScore} a ${oScore}!`, "goal-event");
+    const winMsg = `Meu Time vence por ${uScore}x${oScore} nos pênaltis`;
+    addLog("PEN", `🏆 FIM DE PAPO! ${winMsg}!`, "goal-event");
+    if (penaltyResultEl) {
+      penaltyResultEl.innerText = winMsg;
+    }
     
     if (state.tournamentRound === 7) {
       actionBtn.innerHTML = `<span>Ver Cerimônia de Título</span>`;
@@ -1178,7 +1353,12 @@ function resolvePenaltiesOutcome(uScore, oScore) {
       };
     }
   } else {
-    addLog("PEN", `❌ Eliminados! Perdemos por ${oScore} a ${uScore} nos pênaltis.`, "goal-conceded");
+    const loseMsg = `${oppNameShort} vence por ${oScore}x${uScore} nos pênaltis`;
+    addLog("PEN", `❌ Eliminados! ${loseMsg}.`, "goal-conceded");
+    if (penaltyResultEl) {
+      penaltyResultEl.innerText = loseMsg;
+    }
+    
     actionBtn.innerHTML = `<span>Fim do Jogo</span>`;
     actionBtn.onclick = () => triggerGameOver(false, "knockout_elimination");
   }
