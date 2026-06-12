@@ -512,10 +512,10 @@ header {
   height: 100%;
   border-radius: 8px;
   position: relative;
-  background: linear-gradient(135deg, rgba(var(--cor-clube-1-rgb, 9, 19, 74), 0.25) 0%, rgba(var(--cor-clube-2-rgb, 3, 8, 37), 0.15) 100%) !important;
+  background: #0d112b !important;
   backdrop-filter: blur(8px) !important;
-  border: 1.5px solid var(--cor-clube-1, var(--color-primary)) !important;
-  box-shadow: 0 0 15px rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.3) !important;
+  border: 1.5px solid rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.35) !important;
+  box-shadow: 0 4px 15px rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.1) !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -527,8 +527,8 @@ header {
 }
 
 .player-card.gold-tier {
-  border-color: var(--color-secondary) !important;
-  box-shadow: var(--glow-gold) !important;
+  border: 2px solid #ffd700 !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) !important;
 }
 
 .player-card .card-header-info {
@@ -1360,12 +1360,14 @@ body.goal-flash-active {
 /* Gold and Common card border styles (Rule 3) */
 .card-ouro {
   border: 2px solid #ffd700 !important;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.45) !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) !important;
+  background: #0d112b !important;
 }
 
 .card-comum {
-  border: 1.5px solid var(--cor-clube-1, var(--color-primary)) !important;
-  box-shadow: 0 0 15px rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.3) !important;
+  border: 1.5px solid rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.35) !important;
+  box-shadow: 0 4px 15px rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.1) !important;
+  background: #0d112b !important;
 }
 
 /* Almanac Mode overall hiding */

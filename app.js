@@ -54,18 +54,32 @@ function getBaseClubName(teamName) {
   return teamName.replace(/\s+\d{4}(?:\/\d{2})?$/, "").trim();
 }
 
-// CLUB COLOR MAPPING (Rule 3)
+// CLUB COLOR MAPPING (Rule 1 & 3)
 const CLUB_COLORS = {
   "Real Madrid": { primaria: "#ffffff", secundaria: "#532e91" },
   "Barcelona": { primaria: "#004d98", secundaria: "#a50044" },
   "Milan": { primaria: "#ff0000", secundaria: "#000000" },
-  "Bayern Munique": { primaria: "#dc052d", secundaria: "#ffffff" }
+  "Bayern Munique": { primaria: "#dc052d", secundaria: "#ffffff" },
+  "Inter de Milão": { primaria: "#0066b2", secundaria: "#000000" },
+  "Monaco": { primaria: "#e2001a", secundaria: "#ffffff" },
+  "Ajax": { primaria: "#d01c22", secundaria: "#ffffff" }
 };
 const DEFAULT_COLORS = { primaria: "#00e5ff", secundaria: "#ffd700" };
 
 function getClubColors(teamName) {
-  const baseName = getBaseClubName(teamName);
-  return CLUB_COLORS[baseName] || DEFAULT_COLORS;
+  if (!teamName) return DEFAULT_COLORS;
+  
+  // Clean drawn squad name
+  const clean = getBaseClubName(teamName).toLowerCase();
+  
+  // Substring checks both directions (Rule 1)
+  for (const key of Object.keys(CLUB_COLORS)) {
+    if (clean.includes(key.toLowerCase()) || key.toLowerCase().includes(clean)) {
+      return CLUB_COLORS[key];
+    }
+  }
+  
+  return DEFAULT_COLORS;
 }
 
 // Click Ripple effect (Rule 4)
