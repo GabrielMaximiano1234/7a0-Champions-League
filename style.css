@@ -271,6 +271,53 @@ header {
   box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
 }
 
+/* Modo Atual (2026) Button & Energy Pulse Animation (Rule 2 & UI/UX Pro Max) */
+.btn-mode {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: var(--font-main);
+  transition: all 0.3s ease;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  outline: none;
+}
+
+#btn-mode-atual {
+  border-color: rgba(0, 240, 255, 0.5);
+  color: #00f0ff;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+  animation: electricPulse 2s infinite ease-in-out;
+}
+
+#btn-mode-atual:hover {
+  border-color: #00f0ff;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+}
+
+#btn-mode-atual.selected, #btn-mode-atual.active {
+  background: rgba(0, 240, 255, 0.18) !important;
+  border-color: #00f0ff !important;
+  color: #fff !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.8), inset 0 0 8px rgba(0, 240, 255, 0.3) !important;
+}
+
+@keyframes electricPulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+    border-color: rgba(0, 240, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(0, 240, 255, 0.7), inset 0 0 6px rgba(0, 240, 255, 0.2);
+    border-color: rgba(0, 240, 255, 1);
+  }
+}
+
 .mode-info-box {
   background: rgba(255, 255, 255, 0.03);
   border-left: 3px solid var(--color-primary);
@@ -1247,6 +1294,56 @@ header {
 
 .btn-skip.spinning {
   animation: spinReset 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Pular Ano (Skip Year) Button Styling & Gear Animation (Rule 2 & UI/UX Pro Max) */
+#btn-skip-year {
+  border-color: #00f0ff;
+}
+
+#btn-skip-year:hover:not(:disabled) {
+  background: rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+}
+
+#btn-skip-year.skips-3 {
+  border-color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+}
+
+#btn-skip-year.skips-2 {
+  border-color: #00bfff;
+  box-shadow: 0 0 12px rgba(0, 191, 255, 0.6);
+}
+
+#btn-skip-year.skips-1 {
+  border-color: #0055ff;
+  box-shadow: 0 0 16px rgba(0, 85, 255, 0.8);
+  animation: pulseSkipYearGlow 1.2s infinite ease-in-out;
+}
+
+#btn-skip-year:disabled {
+  opacity: 0.4 !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  background: #111424 !important;
+  border-color: #23283f !important;
+  color: #4c5270 !important;
+}
+
+#btn-skip-year.spinning {
+  animation: spinGear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+@keyframes spinGear {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseSkipYearGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 85, 255, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(0, 85, 255, 0.9); }
 }
 
 @keyframes spinReset {

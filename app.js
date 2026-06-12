@@ -303,6 +303,7 @@ const state = {
   currentCandidates: [],
   selectedCandidate: null,
   skipsRemaining: 3, // Pulos de time (Rule 2)
+  yearSkipsRemaining: 3, // Pulos de era/ano (Rule 1)
   chemistryBonusFactor: 1.0, // Multiplicador de força por conexões (Rule 1)
   
   // Tournament State
@@ -409,6 +410,8 @@ function renderLeaderboard() {
 }
 
 // 5. CONFIGURATION HANDLERS
+var currentMode = "classic"; // Global variable for current mode (Rule 2)
+
 function initConfigSelection() {
   // Helper to attach listeners to config buttons
   const setupToggle = (containerId, stateKey, callback) => {
@@ -425,13 +428,34 @@ function initConfigSelection() {
 
   setupToggle("formation-options", "formation");
   setupToggle("playstyle-options", "playstyle");
-  setupToggle("mode-options", "gameMode", (val) => {
-    const desc = document.getElementById("mode-desc");
-    if (val === "classic") {
-      desc.innerHTML = `<strong>Modo Clássico:</strong> Os ratings reais e qualidades dos jogadores são mostrados nas cartas para guiar suas decisões.`;
-    } else {
-      desc.innerHTML = `<strong>Modo Almanaque:</strong> Esconde os ratings e qualidades de cada jogador. Você deve escalar seu elenco com base na sua memória histórica!`;
-    }
+  
+  // Custom mode options toggle to support buttons and divs, selected and active classes (Rule 2)
+  const modeContainer = document.getElementById("mode-options");
+  const modeBtns = modeContainer.querySelectorAll(".config-btn, .btn-mode");
+  modeBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      modeBtns.forEach(b => {
+        b.classList.remove("selected", "active");
+      });
+      btn.classList.add("selected", "active");
+      
+      let val = btn.getAttribute("data-value");
+      if (!val && btn.id === "btn-mode-atual") {
+        val = "atual";
+      }
+      
+      state.gameMode = val;
+      currentMode = val; // Synchronise global variable
+      
+      const desc = document.getElementById("mode-desc");
+      if (val === "classic") {
+        desc.innerHTML = `<strong>Modo Clássico:</strong> Os ratings reais e qualidades dos jogadores são mostrados nas cartas para guiar suas decisões.`;
+      } else if (val === "almanac") {
+        desc.innerHTML = `<strong>Modo Almanaque:</strong> Esconde os ratings e qualidades de cada jogador. Você deve escalar seu elenco com base na sua memória histórica!`;
+      } else if (val === "atual") {
+        desc.innerHTML = `<strong>Modo Atual (2026):</strong> Filtra o draft apenas para elencos da temporada 2025/26. Os ratings e qualidades são visíveis como no clássico.`;
+      }
+    });
   });
 }
 
@@ -442,6 +466,7 @@ function startDraft() {
   state.selectedPlayerNames.clear();
   state.selectedCandidate = null;
   state.skipsRemaining = 3;
+  state.yearSkipsRemaining = 3; // Reset skips (Rule 1)
   
   // Set up manager info in right panel
   document.getElementById("roster-manager-name").innerText = state.managerName;
@@ -452,6 +477,7 @@ function startDraft() {
   
   // Update skip button to initial state
   updateSkipButtonState();
+  updateSkipYearButtonState(); // Update skip year button state
   
   // Trigger first round
   nextDraftRound();
@@ -513,8 +539,14 @@ function nextDraftRound(skippedTeamName = null) {
   // Reset candidate selection
   state.selectedCandidate = null;
   
-  // Draw random squad
-  const teamNames = Object.keys(SQUADS_DATABASE);
+  // Draw random squad (Rule 3)
+  let teamNames = Object.keys(SQUADS_DATABASE);
+  if (state.gameMode === "atual") {
+    const championsDatabase = Object.keys(SQUADS_DATABASE).map(name => ({ name, players: SQUADS_DATABASE[name] }));
+    const draftPool = championsDatabase.filter(team => team.name.includes("2025/26"));
+    teamNames = draftPool.map(t => t.name);
+  }
+  
   let drawnTeam = "";
   let availableCandidates = [];
   
@@ -604,6 +636,9 @@ function nextDraftRound(skippedTeamName = null) {
   // Render player cards
   renderCandidates();
   
+  // Update skip year button state
+  updateSkipYearButtonState();
+  
   // Remove glows
   clearSlotHighlights();
 }
@@ -642,6 +677,121 @@ function updateSkipButtonState() {
   if (state.skipsRemaining > 0) {
     skipBtn.classList.add(`skips-${state.skipsRemaining}`);
     skipBtn.disabled = false;
+  } else {
+    skipBtn.disabled = true;
+  }
+}
+
+function skipYear() {
+  if (state.yearSkipsRemaining <= 0) return;
+  if (!state.currentDrawnTeam) return;
+  
+  const currentClub = getBaseClubName(state.currentDrawnTeam);
+  const currentTeamName = state.currentDrawnTeam;
+  
+  let alternativePool = Object.keys(SQUADS_DATABASE).filter(name => {
+    return getBaseClubName(name).toLowerCase() === currentClub.toLowerCase() && name !== currentTeamName;
+  });
+  
+  if (state.gameMode === "atual") {
+    alternativePool = alternativePool.filter(name => name.includes("2025/26"));
+  }
+  
+  if (alternativePool.length === 0) {
+    return;
+  }
+  
+  // Deduct skip and spin button (UI/UX Pro Max)
+  state.yearSkipsRemaining--;
+  const skipYearBtn = document.getElementById("btn-skip-year");
+  if (skipYearBtn) {
+    skipYearBtn.classList.add("spinning");
+    setTimeout(() => {
+      skipYearBtn.classList.remove("spinning");
+    }, 600);
+  }
+  
+  // Draw random alternative era
+  const newTeam = alternativePool[Math.floor(Math.random() * alternativePool.length)];
+  state.currentDrawnTeam = newTeam;
+  
+  // Find vacant positions matching slot
+  const vacantPositions = getVacantPositions();
+  const teamPlayers = SQUADS_DATABASE[newTeam].filter(p => !state.selectedPlayerNames.has(p.name));
+  let usefulPlayers = teamPlayers.filter(p => vacantPositions.includes(p.pos));
+  if (usefulPlayers.length === 0) {
+    usefulPlayers = teamPlayers; // fallback
+  }
+  state.currentCandidates = usefulPlayers;
+  
+  document.getElementById("current-team-drawn").innerText = `Elenco sorteado: ${newTeam}`;
+  
+  // Re-apply colors and trigger slime reveal (Rule 3)
+  const colors = getClubColors(newTeam);
+  const rgb1 = hexToRgb(colors.primaria);
+  const rgb2 = hexToRgb(colors.secundaria);
+  
+  document.documentElement.style.setProperty("--cor-clube-1", colors.primaria);
+  document.documentElement.style.setProperty("--cor-clube-2", colors.secundaria);
+  document.documentElement.style.setProperty("--cor-clube-1-rgb", rgb1);
+  document.documentElement.style.setProperty("--cor-clube-2-rgb", rgb2);
+  
+  const selectionPanel = document.getElementById("selection-panel");
+  if (selectionPanel) {
+    selectionPanel.style.setProperty("--cor-clube-1", colors.primaria);
+    selectionPanel.style.setProperty("--cor-clube-2", colors.secundaria);
+    selectionPanel.style.setProperty("--cor-clube-1-rgb", rgb1);
+    selectionPanel.style.setProperty("--cor-clube-2-rgb", rgb2);
+    
+    selectionPanel.classList.remove("flash-sorteio-active");
+    void selectionPanel.offsetWidth; // trigger reflow
+    selectionPanel.classList.add("flash-sorteio-active");
+    setTimeout(() => {
+      selectionPanel.classList.remove("flash-sorteio-active");
+    }, 1000);
+  }
+  
+  // Play draw sound
+  playDrawSound();
+  
+  // Render candidates
+  renderCandidates();
+  
+  // Update button state
+  updateSkipYearButtonState();
+}
+
+function updateSkipYearButtonState() {
+  const skipBtn = document.getElementById("btn-skip-year");
+  if (!skipBtn) return;
+  
+  skipBtn.innerText = `🔄 Pular Ano (${state.yearSkipsRemaining} Restantes)`;
+  skipBtn.className = "btn-skip"; // Reset class
+  
+  if (state.yearSkipsRemaining <= 0) {
+    skipBtn.disabled = true;
+    return;
+  }
+  
+  if (!state.currentDrawnTeam) {
+    skipBtn.disabled = true;
+    return;
+  }
+  
+  const currentClub = getBaseClubName(state.currentDrawnTeam);
+  const currentTeamName = state.currentDrawnTeam;
+  
+  let alternativePool = Object.keys(SQUADS_DATABASE).filter(name => {
+    return getBaseClubName(name).toLowerCase() === currentClub.toLowerCase() && name !== currentTeamName;
+  });
+  
+  if (state.gameMode === "atual") {
+    alternativePool = alternativePool.filter(name => name.includes("2025/26"));
+  }
+  
+  if (alternativePool.length > 0) {
+    skipBtn.disabled = false;
+    skipBtn.classList.add(`skips-${state.yearSkipsRemaining}`);
   } else {
     skipBtn.disabled = true;
   }
@@ -942,7 +1092,12 @@ function initTournament() {
   state.perfectCleanSheetRun = true;
   
   // Pre-generate opponents list from squads database (excluding duplicate names)
-  const teams = Object.keys(SQUADS_DATABASE);
+  let teams = Object.keys(SQUADS_DATABASE);
+  if (state.gameMode === "atual") {
+    const championsDatabase = Object.keys(SQUADS_DATABASE).map(name => ({ name, players: SQUADS_DATABASE[name] }));
+    const draftPool = championsDatabase.filter(team => team.name.includes("2025/26"));
+    teams = draftPool.map(t => t.name);
+  }
   // Shuffle teams for opponents
   state.opponentsList = [...teams].sort(() => Math.random() - 0.5);
   
@@ -2033,6 +2188,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const skipBtn = document.getElementById("btn-skip-team");
   if (skipBtn) {
     skipBtn.addEventListener("click", skipTeam);
+  }
+  
+  const skipYearBtn = document.getElementById("btn-skip-year");
+  if (skipYearBtn) {
+    skipYearBtn.addEventListener("click", skipYear);
   }
   
   // Live tactics button initialization (Rule 3)

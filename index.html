@@ -85,6 +85,7 @@
           <div class="config-options" id="mode-options">
             <div class="config-btn selected" data-value="classic">Clássico</div>
             <div class="config-btn" data-value="almanac">Almanaque</div>
+            <button type="button" class="btn-mode" id="btn-mode-atual">Modo Atual (2026) ⚡</button>
           </div>
           <div class="mode-info-box" id="mode-desc">
             <strong>Modo Clássico:</strong> Os ratings reais e qualidades dos jogadores são mostrados nas cartas para guiar suas decisões.
@@ -126,7 +127,10 @@
               <h3 id="current-round-title">Rodada 1 / 11</h3>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 8px;">
                 <p id="current-team-drawn" style="margin: 0;">Elenco sorteado: Real Madrid 2017/18</p>
-                <button id="btn-skip-team" class="btn-skip">🔄 Pular Time (3 Restantes)</button>
+                <div style="display: flex; gap: 10px;">
+                  <button id="btn-skip-team" class="btn-skip">🔄 Pular Time (3 Restantes)</button>
+                  <button type="button" id="btn-skip-year" class="btn-skip">🔄 Pular Ano (3 Restantes)</button>
+                </div>
               </div>
             </div>
             
@@ -343,7 +347,7 @@
 
   </div>
 
-  <script src="champions-7-0-db-v2.js"></script>
+  <script src="champions-7-0-db-v3.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
