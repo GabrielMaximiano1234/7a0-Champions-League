@@ -512,9 +512,10 @@ header {
   height: 100%;
   border-radius: 8px;
   position: relative;
-  background: linear-gradient(135deg, #09134a 0%, #030825 100%);
-  border: 1.5px solid var(--color-primary);
-  box-shadow: var(--glow-celeste);
+  background: linear-gradient(135deg, rgba(var(--cor-clube-1-rgb, 9, 19, 74), 0.25) 0%, rgba(var(--cor-clube-2-rgb, 3, 8, 37), 0.15) 100%) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1.5px solid var(--cor-clube-1, var(--color-primary)) !important;
+  box-shadow: 0 0 15px rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.3) !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -526,9 +527,8 @@ header {
 }
 
 .player-card.gold-tier {
-  border-color: var(--color-secondary);
-  box-shadow: var(--glow-gold);
-  background: linear-gradient(135deg, #1f1a02 0%, #0c0901 50%, #2f2504 100%);
+  border-color: var(--color-secondary) !important;
+  box-shadow: var(--glow-gold) !important;
 }
 
 .player-card .card-header-info {
@@ -640,6 +640,7 @@ header {
   justify-content: center;
   gap: 10px;
   margin-bottom: 15px;
+  perspective: 1000px;
 }
 
 .selection-card-container {
@@ -1348,7 +1349,7 @@ body.goal-flash-active {
 }
 
 /* ==========================================================================
-   UPGRADES V2.2 - DYNAMIC THEMES, ANIMATIONS & ALMANAC
+   UPGRADES V2.2 & V2.3 - DYNAMIC THEMES, 3D ANIMATIONS, PITCH BG & ALMANAC
    ========================================================================== */
 
 /* UI/UX Pro Max: Global Card & Slot transitions */
@@ -1356,17 +1357,15 @@ body.goal-flash-active {
   transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Gold and Common card classes */
+/* Gold and Common card border styles (Rule 3) */
 .card-ouro {
   border: 2px solid #ffd700 !important;
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.45) !important;
-  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.15) 0%, #030825 100%) !important;
 }
 
 .card-comum {
-  border: 1.5px solid var(--color-primary) !important;
-  box-shadow: var(--glow-celeste) !important;
-  background: linear-gradient(135deg, #09134a 0%, #030825 100%) !important;
+  border: 1.5px solid var(--cor-clube-1, var(--color-primary)) !important;
+  box-shadow: 0 0 15px rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.3) !important;
 }
 
 /* Almanac Mode overall hiding */
@@ -1444,4 +1443,61 @@ body.goal-flash-active {
 .achievement-item.unlocked {
   filter: none;
 }
+
+/* ADVANCED ART DIRECTION (V2.3) */
+
+/* Soccer Pitch Background (Rule 4) */
+.field-lines-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><rect x='5' y='5' width='90' height='90' fill='none' stroke='%2300ff87' stroke-width='0.4'/><line x1='5' y1='50' x2='95' y2='50' stroke='%2300ff87' stroke-width='0.4'/><circle cx='50' cy='50' r='12' fill='none' stroke='%2300ff87' stroke-width='0.4'/><rect x='25' y='5' width='50' height='15' fill='none' stroke='%2300ff87' stroke-width='0.4'/><rect x='25' y='80' width='50' height='15' fill='none' stroke='%2300ff87' stroke-width='0.4'/><circle cx='50' cy='50' r='1' fill='%2300ff87'/></svg>");
+  background-size: 100% 100%;
+}
+
+/* 3D Card Flip Animation (Rule 5) */
+@keyframes cardFlip3D {
+  0% {
+    transform: rotateY(-180deg) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+.card-3d-flip {
+  animation: cardFlip3D 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Tactical Pulsar for Empty Slots (Rule 5) */
+@keyframes tacticalPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--cor-clube-1, var(--color-primary)), inset 0 0 5px var(--cor-clube-1, var(--color-primary));
+    border-color: var(--cor-clube-1, var(--color-primary));
+  }
+  50% {
+    box-shadow: 0 0 20px var(--cor-clube-1, var(--color-primary)), inset 0 0 10px var(--cor-clube-1, var(--color-primary));
+    border-color: var(--cor-clube-1, var(--color-primary));
+  }
+}
+
+.pitch-slot.active-select {
+  animation: tacticalPulse 1.5s infinite ease-in-out !important;
+}
+
+/* Vintage Soccer Jersey styles */
+.jersey-icon {
+  margin: 6px auto 3px;
+  display: block;
+}
+
 

@@ -187,6 +187,61 @@ function playDrawSound() {
   }
 }
 
+// Convert Hex color to RGB comma-separated string (Rule 2)
+function hexToRgb(hex) {
+  const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  const fullHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
+  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : "0, 0, 0";
+}
+
+// Check if team is historically striped (Rule 1)
+function isStripedTeam(teamName) {
+  const baseName = getBaseClubName(teamName);
+  const stripedClubs = ["Barcelona", "Milan", "Inter de Milão", "Porto", "Juventus", "Atletico de Madrid"];
+  return stripedClubs.includes(baseName);
+}
+
+// Compile custom soccer shirt SVG model (Rule 1)
+function getJerseySVG(teamName, colors, uniqueId) {
+  const isStriped = isStripedTeam(teamName);
+  const color1 = colors.primaria;
+  const color2 = colors.secundaria;
+  
+  let fillValue = color1;
+  let patternDef = "";
+  
+  if (isStriped) {
+    const patternId = `stripes-${uniqueId}`;
+    patternDef = `
+      <defs>
+        <pattern id="${patternId}" width="20" height="100" patternUnits="userSpaceOnUse">
+          <rect width="10" height="100" fill="${color1}"/>
+          <rect x="10" width="10" height="100" fill="${color2}"/>
+        </pattern>
+      </defs>
+    `;
+    fillValue = `url(#${patternId})`;
+  }
+  
+  return `
+    <svg class="jersey-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 36px; height: 36px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45));">
+      ${patternDef}
+      <!-- Main Shirt Body -->
+      <path d="M 40,20 L 30,22 L 15,35 L 22,48 L 32,40 L 32,85 L 68,85 L 68,40 L 78,48 L 85,35 L 70,22 L 60,20 C 60,26 40,26 40,20 Z" fill="${fillValue}" stroke="${isStriped ? 'none' : color2}" stroke-width="1.5" />
+      
+      <!-- Collar & Details (Secondary color for solid, black/white/gold accents for striped) -->
+      <path d="M 40,20 C 42,25 58,25 60,20" fill="none" stroke="${color2}" stroke-width="3" stroke-linecap="round" />
+      
+      <!-- Left Sleeve Cuff -->
+      <line x1="15" y1="35" x2="22" y2="48" stroke="${color2}" stroke-width="3.5" />
+      
+      <!-- Right Sleeve Cuff -->
+      <line x1="85" y1="35" x2="78" y2="48" stroke="${color2}" stroke-width="3.5" />
+    </svg>
+  `;
+}
+
 function getVacantPositions() {
   const formationSlots = FORMATIONS[state.formation];
   const vacant = new Set();
@@ -486,12 +541,23 @@ function nextDraftRound(skippedTeamName = null) {
   
   document.getElementById("current-team-drawn").innerText = `Elenco sorteado: ${drawnTeam}`;
   
-  // Dynamic color and animation injection (Rule 4)
+  // Dynamic color and animation injection (Rule 4 & 2)
   const colors = getClubColors(drawnTeam);
+  const rgb1 = hexToRgb(colors.primaria);
+  const rgb2 = hexToRgb(colors.secundaria);
+  
+  document.documentElement.style.setProperty("--cor-clube-1", colors.primaria);
+  document.documentElement.style.setProperty("--cor-clube-2", colors.secundaria);
+  document.documentElement.style.setProperty("--cor-clube-1-rgb", rgb1);
+  document.documentElement.style.setProperty("--cor-clube-2-rgb", rgb2);
+  
   const selectionPanel = document.getElementById("selection-panel");
   if (selectionPanel) {
     selectionPanel.style.setProperty("--cor-clube-1", colors.primaria);
     selectionPanel.style.setProperty("--cor-clube-2", colors.secundaria);
+    selectionPanel.style.setProperty("--cor-clube-1-rgb", rgb1);
+    selectionPanel.style.setProperty("--cor-clube-2-rgb", rgb2);
+    
     selectionPanel.classList.remove("flash-sorteio-active");
     void selectionPanel.offsetWidth; // trigger reflow
     selectionPanel.classList.add("flash-sorteio-active");
@@ -553,10 +619,21 @@ function renderCandidates() {
   const container = document.getElementById("draft-candidates");
   container.innerHTML = "";
   
+  const colors = getClubColors(state.currentDrawnTeam);
+  const rgb1 = hexToRgb(colors.primaria);
+  const rgb2 = hexToRgb(colors.secundaria);
+  
   state.currentCandidates.forEach((player, idx) => {
     const cardContainer = document.createElement("div");
-    cardContainer.className = "selection-card-container";
+    cardContainer.className = "selection-card-container card-3d-flip";
+    cardContainer.style.animationDelay = `${idx * 0.12}s`;
     cardContainer.setAttribute("data-index", idx);
+    
+    // Inject club colors as CSS variables for card gradients (Rule 2)
+    cardContainer.style.setProperty("--cor-clube-1", colors.primaria);
+    cardContainer.style.setProperty("--cor-clube-2", colors.secundaria);
+    cardContainer.style.setProperty("--cor-clube-1-rgb", rgb1);
+    cardContainer.style.setProperty("--cor-clube-2-rgb", rgb2);
     
     const isGold = player.rating >= 90;
     let cardClass = "";
@@ -573,13 +650,16 @@ function renderCandidates() {
       ratingClass = "rating hidden";
     }
     
+    // Compile retro jersey SVG icon (Rule 1)
+    const jerseySVG = getJerseySVG(state.currentDrawnTeam, colors, `candidate-${idx}`);
+    
     cardContainer.innerHTML = `
       <div class="player-card ${cardClass}">
         <div class="card-header-info">
           <span class="${ratingClass}">${ratingDisplay}</span>
           <span class="position">${player.pos}</span>
         </div>
-        <div class="card-photo">👤</div>
+        <div class="card-photo">${jerseySVG}</div>
         <div class="card-footer">
           <div class="name">${player.name}</div>
           <div class="team-name">${state.currentDrawnTeam.split(" ")[0]}</div>
@@ -588,7 +668,6 @@ function renderCandidates() {
     `;
     
     cardContainer.addEventListener("click", () => {
-      const colors = getClubColors(state.currentDrawnTeam);
       createRippleEffect(cardContainer, colors.primaria);
       selectCandidate(idx, cardContainer);
     });
@@ -672,19 +751,31 @@ function handleSlotClick(slot) {
     ratingClass = "rating hidden";
   }
   
+  // Set slot color properties for card gradients (Rule 2)
+  const colors = getClubColors(finalPlayer.originTeam);
+  const rgb1 = hexToRgb(colors.primaria);
+  const rgb2 = hexToRgb(colors.secundaria);
+  slotEl.style.setProperty("--cor-clube-1", colors.primaria);
+  slotEl.style.setProperty("--cor-clube-2", colors.secundaria);
+  slotEl.style.setProperty("--cor-clube-1-rgb", rgb1);
+  slotEl.style.setProperty("--cor-clube-2-rgb", rgb2);
+  
+  // Compile retro jersey SVG icon (Rule 1)
+  const jerseySVG = getJerseySVG(finalPlayer.originTeam, colors, `slot-${slot.id}`);
+  
   slotEl.innerHTML = `
     <div class="player-card ${cardClass}" style="border-radius: 8px;">
       <div class="card-header-info" style="font-size: 0.55rem; padding: 0 1px;">
         <span class="${ratingClass}" style="font-size: 0.75rem;">${ratingDisplay}</span>
         <span class="position" style="font-size: 0.5rem; padding: 0px 2px;">${finalPlayer.pos}</span>
       </div>
-      <div class="name" style="font-size: 0.6rem; transform: scale(0.95); margin-top: 5px;">${finalPlayer.name.split(" ").pop()}</div>
+      <div style="transform: scale(0.65); margin: -4px 0;">${jerseySVG}</div>
+      <div class="name" style="font-size: 0.6rem; transform: scale(0.95); margin-top: 1px;">${finalPlayer.name.split(" ").pop()}</div>
       <div class="team-name" style="font-size: 0.45rem; opacity: 0.7; margin-bottom: 2px;">${finalPlayer.originTeam.split(" ")[0]}</div>
     </div>
   `;
   
   // Set blink variables on the slot element (Rule 4)
-  const colors = getClubColors(finalPlayer.originTeam);
   let blinkColor = colors.primaria;
   let blinkColorAlpha = "rgba(0, 240, 255, 0.3)";
   
