@@ -56,15 +56,31 @@ function getBaseClubName(teamName) {
 
 // CLUB COLOR MAPPING (Rule 1 & 3)
 const CLUB_COLORS = {
-  "Real Madrid": { primaria: "#ffffff", secundaria: "#532e91" },
-  "Barcelona": { primaria: "#004d98", secundaria: "#a50044" },
-  "Milan": { primaria: "#ff0000", secundaria: "#000000" },
-  "Bayern Munique": { primaria: "#dc052d", secundaria: "#ffffff" },
-  "Inter de Milão": { primaria: "#0066b2", secundaria: "#000000" },
-  "Monaco": { primaria: "#e2001a", secundaria: "#ffffff" },
-  "Ajax": { primaria: "#d01c22", secundaria: "#ffffff" }
+  "Real Madrid": { primaria: "#ffffff", secundaria: "#532e91", primaryRGB: "255, 255, 255", secondaryRGB: "83, 46, 145" },
+  "Barcelona": { primaria: "#004d98", secundaria: "#a50044", primaryRGB: "0, 77, 152", secondaryRGB: "165, 0, 68" },
+  "Milan": { primaria: "#ff0000", secundaria: "#000000", primaryRGB: "255, 0, 0", secondaryRGB: "0, 0, 0" },
+  "Bayern Munique": { primaria: "#dc052d", secundaria: "#ffffff", primaryRGB: "220, 5, 45", secondaryRGB: "255, 255, 255" },
+  "Inter de Milão": { primaria: "#0066b2", secundaria: "#000000", primaryRGB: "0, 102, 178", secondaryRGB: "0, 0, 0" },
+  "Chelsea": { primaria: "#034694", secundaria: "#ffffff", primaryRGB: "3, 70, 148", secondaryRGB: "255, 255, 255" },
+  "Manchester United": { primaria: "#da291c", secundaria: "#000000", primaryRGB: "218, 41, 28", secondaryRGB: "0, 0, 0" },
+  "Liverpool": { primaria: "#c8102e", secundaria: "#f6eb61", primaryRGB: "200, 16, 46", secondaryRGB: "246, 235, 97" },
+  "Porto": { primaria: "#005ca9", secundaria: "#ffffff", primaryRGB: "0, 92, 169", secondaryRGB: "255, 255, 255" },
+  "Ajax": { primaria: "#d01c22", secundaria: "#ffffff", primaryRGB: "208, 28, 34", secondaryRGB: "255, 255, 255" },
+  "Arsenal": { primaria: "#ef0107", secundaria: "#ffffff", primaryRGB: "239, 1, 7", secondaryRGB: "255, 255, 255" },
+  "Manchester City": { primaria: "#6cabdd", secundaria: "#1c2c5b", primaryRGB: "108, 171, 221", secondaryRGB: "28, 44, 91" },
+  "Atletico de Madrid": { primaria: "#cb3524", secundaria: "#192e62", primaryRGB: "203, 53, 36", secondaryRGB: "25, 46, 98" },
+  "Borussia Dortmund": { primaria: "#fde100", secundaria: "#000000", primaryRGB: "253, 225, 0", secondaryRGB: "0, 0, 0" },
+  "Paris Saint-Germain": { primaria: "#0052b4", secundaria: "#e30613", primaryRGB: "0, 82, 180", secondaryRGB: "227, 6, 19" },
+  "Monaco": { primaria: "#e2001a", secundaria: "#ffffff", primaryRGB: "226, 0, 26", secondaryRGB: "255, 255, 255" },
+  "Valencia": { primaria: "#ffffff", secundaria: "#ff7f00", primaryRGB: "255, 255, 255", secondaryRGB: "255, 127, 0" },
+  "Bayer Leverkusen": { primaria: "#e32221", secundaria: "#000000", primaryRGB: "227, 34, 33", secondaryRGB: "0, 0, 0" },
+  "Roma": { primaria: "#861f41", secundaria: "#fbe122", primaryRGB: "134, 31, 65", secondaryRGB: "251, 225, 34" },
+  "Napoli": { primaria: "#12a0fc", secundaria: "#ffffff", primaryRGB: "18, 160, 252", secondaryRGB: "255, 255, 255" },
+  "Marseille": { primaria: "#00a2e8", secundaria: "#ffffff", primaryRGB: "0, 162, 232", secondaryRGB: "255, 255, 255" },
+  "Sevilla": { primaria: "#d41910", secundaria: "#ffffff", primaryRGB: "212, 25, 16", secondaryRGB: "255, 255, 255" },
+  "Benfica": { primaria: "#e30613", secundaria: "#ffffff", primaryRGB: "227, 6, 19", secondaryRGB: "255, 255, 255" }
 };
-const DEFAULT_COLORS = { primaria: "#00e5ff", secundaria: "#ffd700" };
+const DEFAULT_COLORS = { primaria: "#00e5ff", secundaria: "#ffd700", primaryRGB: "0, 229, 255", secondaryRGB: "255, 215, 0" };
 
 function getClubColors(teamName) {
   if (!teamName) return DEFAULT_COLORS;
@@ -648,6 +664,8 @@ function renderCandidates() {
     cardContainer.style.setProperty("--cor-clube-2", colors.secundaria);
     cardContainer.style.setProperty("--cor-clube-1-rgb", rgb1);
     cardContainer.style.setProperty("--cor-clube-2-rgb", rgb2);
+    cardContainer.style.setProperty("--club-primary-rgb", colors.primaryRGB || rgb1);
+    cardContainer.style.setProperty("--club-secondary-rgb", colors.secondaryRGB || rgb2);
     
     const isGold = player.rating >= 90;
     let cardClass = "";
@@ -669,6 +687,7 @@ function renderCandidates() {
     
     cardContainer.innerHTML = `
       <div class="player-card ${cardClass}">
+        <div class="laser-sweep"></div>
         <div class="card-header-info">
           <span class="${ratingClass}">${ratingDisplay}</span>
           <span class="position">${player.pos}</span>
@@ -773,12 +792,15 @@ function handleSlotClick(slot) {
   slotEl.style.setProperty("--cor-clube-2", colors.secundaria);
   slotEl.style.setProperty("--cor-clube-1-rgb", rgb1);
   slotEl.style.setProperty("--cor-clube-2-rgb", rgb2);
+  slotEl.style.setProperty("--club-primary-rgb", colors.primaryRGB || rgb1);
+  slotEl.style.setProperty("--club-secondary-rgb", colors.secondaryRGB || rgb2);
   
   // Compile retro jersey SVG icon (Rule 1)
   const jerseySVG = getJerseySVG(finalPlayer.originTeam, colors, `slot-${slot.id}`);
   
   slotEl.innerHTML = `
     <div class="player-card ${cardClass}" style="border-radius: 8px;">
+      <div class="laser-sweep"></div>
       <div class="card-header-info" style="font-size: 0.55rem; padding: 0 1px;">
         <span class="${ratingClass}" style="font-size: 0.75rem;">${ratingDisplay}</span>
         <span class="position" style="font-size: 0.5rem; padding: 0px 2px;">${finalPlayer.pos}</span>
