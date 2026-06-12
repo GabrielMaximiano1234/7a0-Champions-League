@@ -54,6 +54,139 @@ function getBaseClubName(teamName) {
   return teamName.replace(/\s+\d{4}(?:\/\d{2})?$/, "").trim();
 }
 
+// CLUB COLOR MAPPING (Rule 3)
+const CLUB_COLORS = {
+  "Real Madrid": { primaria: "#ffffff", secundaria: "#532e91" },
+  "Barcelona": { primaria: "#004d98", secundaria: "#a50044" },
+  "Milan": { primaria: "#ff0000", secundaria: "#000000" },
+  "Bayern Munique": { primaria: "#dc052d", secundaria: "#ffffff" }
+};
+const DEFAULT_COLORS = { primaria: "#00e5ff", secundaria: "#ffd700" };
+
+function getClubColors(teamName) {
+  const baseName = getBaseClubName(teamName);
+  return CLUB_COLORS[baseName] || DEFAULT_COLORS;
+}
+
+// Click Ripple effect (Rule 4)
+function createRippleEffect(element, color) {
+  const circle = document.createElement("span");
+  const diameter = Math.max(element.clientWidth, element.clientHeight);
+  
+  circle.style.width = circle.style.height = `${diameter}px`;
+  circle.style.left = `50%`;
+  circle.style.top = `50%`;
+  circle.style.transform = `translate(-50%, -50%) scale(0)`;
+  circle.className = "ripple";
+  circle.style.backgroundColor = color;
+  circle.style.position = "absolute";
+  circle.style.borderRadius = "50%";
+  circle.style.pointerEvents = "none";
+  circle.style.opacity = "0.7";
+  circle.style.animation = "ripple-animation 0.6s linear";
+  
+  const originalPosition = element.style.position;
+  if (!originalPosition || originalPosition === "static") {
+    element.style.position = "relative";
+  }
+  element.style.overflow = "hidden";
+  
+  element.appendChild(circle);
+  
+  setTimeout(() => {
+    circle.remove();
+  }, 600);
+}
+
+// Web Audio Synthesizer (cheers and wind draw whoosh)
+let audioCtx = null;
+
+function playDrawSound() {
+  try {
+    const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtxClass) return;
+    if (!audioCtx) {
+      audioCtx = new AudioCtxClass();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    
+    const now = audioCtx.currentTime;
+    
+    // 1. Whoosh / Wind Sweep (Lottery draw sensation)
+    const noiseLength = audioCtx.sampleRate * 1.5;
+    const buffer = audioCtx.createBuffer(1, noiseLength, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < noiseLength; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    
+    const noiseNode = audioCtx.createBufferSource();
+    noiseNode.buffer = buffer;
+    
+    const filterNode = audioCtx.createBiquadFilter();
+    filterNode.type = "bandpass";
+    filterNode.Q.setValueAtTime(8, now);
+    filterNode.frequency.setValueAtTime(300, now);
+    filterNode.frequency.exponentialRampToValueAtTime(1500, now + 0.6);
+    filterNode.frequency.exponentialRampToValueAtTime(100, now + 1.5);
+    
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(0.12, now + 0.3);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+    
+    noiseNode.connect(filterNode);
+    filterNode.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    noiseNode.start(now);
+    noiseNode.stop(now + 1.5);
+    
+    // 2. Crowd Cheer Sound (Layered pink noise approximation)
+    const cheerLength = audioCtx.sampleRate * 2.5;
+    const cheerBuffer = audioCtx.createBuffer(1, cheerLength, audioCtx.sampleRate);
+    const cheerData = cheerBuffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < cheerLength; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      cheerData[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+      cheerData[i] *= 0.1;
+      b6 = white * 0.115926;
+    }
+    
+    const cheerNode = audioCtx.createBufferSource();
+    cheerNode.buffer = cheerBuffer;
+    
+    const cheerFilter = audioCtx.createBiquadFilter();
+    cheerFilter.type = "lowpass";
+    cheerFilter.frequency.setValueAtTime(400, now);
+    cheerFilter.frequency.exponentialRampToValueAtTime(1000, now + 0.4);
+    cheerFilter.frequency.exponentialRampToValueAtTime(300, now + 2.5);
+    
+    const cheerGain = audioCtx.createGain();
+    cheerGain.gain.setValueAtTime(0, now);
+    cheerGain.gain.linearRampToValueAtTime(0.06, now + 0.4);
+    cheerGain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+    
+    cheerNode.connect(cheerFilter);
+    cheerFilter.connect(cheerGain);
+    cheerGain.connect(audioCtx.destination);
+    
+    cheerNode.start(now + 0.1);
+    cheerNode.stop(now + 2.5);
+  } catch (e) {
+    console.warn("Web Audio API failed or blocked", e);
+  }
+}
+
 function getVacantPositions() {
   const formationSlots = FORMATIONS[state.formation];
   const vacant = new Set();
@@ -280,6 +413,8 @@ function renderPitchSlots() {
 
 function nextDraftRound(skippedTeamName = null) {
   if (state.draftRound > 11) {
+    // Check achievements
+    checkDraftAchievements();
     // Roster is fully drafted!
     initTournament();
     return;
@@ -351,6 +486,23 @@ function nextDraftRound(skippedTeamName = null) {
   
   document.getElementById("current-team-drawn").innerText = `Elenco sorteado: ${drawnTeam}`;
   
+  // Dynamic color and animation injection (Rule 4)
+  const colors = getClubColors(drawnTeam);
+  const selectionPanel = document.getElementById("selection-panel");
+  if (selectionPanel) {
+    selectionPanel.style.setProperty("--cor-clube-1", colors.primaria);
+    selectionPanel.style.setProperty("--cor-clube-2", colors.secundaria);
+    selectionPanel.classList.remove("flash-sorteio-active");
+    void selectionPanel.offsetWidth; // trigger reflow
+    selectionPanel.classList.add("flash-sorteio-active");
+    setTimeout(() => {
+      selectionPanel.classList.remove("flash-sorteio-active");
+    }, 1000);
+  }
+  
+  // Web Audio lottery sound
+  playDrawSound();
+  
   // Render player cards
   renderCandidates();
   
@@ -407,12 +559,24 @@ function renderCandidates() {
     cardContainer.setAttribute("data-index", idx);
     
     const isGold = player.rating >= 90;
-    const ratingDisplay = state.gameMode === "classic" ? player.rating : "??";
+    let cardClass = "";
+    let ratingDisplay = "";
+    let ratingClass = "rating";
+    
+    if (state.gameMode === "classic") {
+      cardClass = isGold ? "card-ouro gold-tier" : "card-comum";
+      ratingDisplay = player.rating;
+    } else {
+      // Almanac: Anti-Spoiler (always common card visual, rating hidden)
+      cardClass = "card-comum";
+      ratingDisplay = "";
+      ratingClass = "rating hidden";
+    }
     
     cardContainer.innerHTML = `
-      <div class="player-card ${isGold ? 'gold-tier' : ''}">
+      <div class="player-card ${cardClass}">
         <div class="card-header-info">
-          <span class="rating">${ratingDisplay}</span>
+          <span class="${ratingClass}">${ratingDisplay}</span>
           <span class="position">${player.pos}</span>
         </div>
         <div class="card-photo">👤</div>
@@ -423,7 +587,11 @@ function renderCandidates() {
       </div>
     `;
     
-    cardContainer.addEventListener("click", () => selectCandidate(idx, cardContainer));
+    cardContainer.addEventListener("click", () => {
+      const colors = getClubColors(state.currentDrawnTeam);
+      createRippleEffect(cardContainer, colors.primaria);
+      selectCandidate(idx, cardContainer);
+    });
     container.appendChild(cardContainer);
   });
 }
@@ -489,18 +657,60 @@ function handleSlotClick(slot) {
   slotEl.classList.add("filled");
   
   const isGold = finalPlayer.rating >= 90;
-  const ratingDisplay = state.gameMode === "classic" ? finalPlayer.rating : "??";
+  
+  let cardClass = "";
+  let ratingDisplay = "";
+  let ratingClass = "rating";
+  
+  if (state.gameMode === "classic") {
+    cardClass = isGold ? "card-ouro gold-tier" : "card-comum";
+    ratingDisplay = finalPlayer.rating;
+  } else {
+    // Almanac: Reveal gold card visual on tactical field, but keep rating number hidden (Rule 2)
+    cardClass = isGold ? "card-ouro gold-tier" : "card-comum";
+    ratingDisplay = "";
+    ratingClass = "rating hidden";
+  }
   
   slotEl.innerHTML = `
-    <div class="player-card ${isGold ? 'gold-tier' : ''}" style="border-radius: 8px;">
+    <div class="player-card ${cardClass}" style="border-radius: 8px;">
       <div class="card-header-info" style="font-size: 0.55rem; padding: 0 1px;">
-        <span class="rating" style="font-size: 0.75rem;">${ratingDisplay}</span>
+        <span class="${ratingClass}" style="font-size: 0.75rem;">${ratingDisplay}</span>
         <span class="position" style="font-size: 0.5rem; padding: 0px 2px;">${finalPlayer.pos}</span>
       </div>
       <div class="name" style="font-size: 0.6rem; transform: scale(0.95); margin-top: 5px;">${finalPlayer.name.split(" ").pop()}</div>
       <div class="team-name" style="font-size: 0.45rem; opacity: 0.7; margin-bottom: 2px;">${finalPlayer.originTeam.split(" ")[0]}</div>
     </div>
   `;
+  
+  // Set blink variables on the slot element (Rule 4)
+  const colors = getClubColors(finalPlayer.originTeam);
+  let blinkColor = colors.primaria;
+  let blinkColorAlpha = "rgba(0, 240, 255, 0.3)";
+  
+  if (isGold) {
+    // Gold celebratory blink for rating >= 90 (Rule 2)
+    blinkColor = "#ffd700";
+    blinkColorAlpha = "rgba(255, 215, 0, 0.35)";
+  } else {
+    const hex = colors.primaria;
+    const rVal = parseInt(hex.slice(1, 3), 16);
+    const gVal = parseInt(hex.slice(3, 5), 16);
+    const bVal = parseInt(hex.slice(5, 7), 16);
+    blinkColorAlpha = `rgba(${rVal}, ${gVal}, ${bVal}, 0.3)`;
+  }
+  
+  slotEl.style.setProperty("--blink-color", blinkColor);
+  slotEl.style.setProperty("--blink-color-alpha", blinkColorAlpha);
+  
+  // Trigger blink animation
+  slotEl.classList.remove("slot-blink-active");
+  void slotEl.offsetWidth; // trigger reflow
+  slotEl.classList.add("slot-blink-active");
+  
+  setTimeout(() => {
+    slotEl.classList.remove("slot-blink-active");
+  }, 1200);
   
   // Update stats
   updateRosterStats();
@@ -1533,7 +1743,110 @@ function initLiveTacticsEvents() {
   });
 }
 
-// 10. ENTRY POINT / EVENT LISTENERS
+// 11. UPGRADES V2.2 - ACHIEVEMENTS & TACTICAL NOTEBOOK
+function checkDraftAchievements() {
+  const players = Object.values(state.draftRoster);
+  const playerNames = new Set(players.map(p => p.name));
+  
+  const achievements = [
+    {
+      id: "msn",
+      title: "Trio MSN 🇧🇷🇦🇷🇺🇾",
+      check: () => playerNames.has("Lionel Messi") && playerNames.has("Luis Suárez") && playerNames.has("Neymar Jr")
+    },
+    {
+      id: "bbc",
+      title: "Trio BBC 🇵🇹🇫🇷🇬🇧",
+      check: () => (playerNames.has("C. Ronaldo") || playerNames.has("Cristiano Ronaldo")) && playerNames.has("Karim Benzema") && playerNames.has("Gareth Bale")
+    },
+    {
+      id: "tikitaka",
+      title: "Mestres do Tiki-Taka 🇪🇸",
+      check: () => playerNames.has("Xavi Hernández") && playerNames.has("Andrés Iniesta") && playerNames.has("Lionel Messi")
+    },
+    {
+      id: "bayern",
+      title: "A Dinastia Bávara 🇩🇪",
+      check: () => playerNames.has("Manuel Neuer") && playerNames.has("Philipp Lahm") && playerNames.has("R. Lewandowski")
+    },
+    {
+      id: "milan",
+      title: "Defesa Imortal do Milan 🇮🇹",
+      check: () => playerNames.has("Dida") && playerNames.has("Alessandro Nesta") && playerNames.has("Paolo Maldini")
+    }
+  ];
+  
+  const unlocked = JSON.parse(localStorage.getItem("champions70_achievements") || "[]");
+  let newlyUnlocked = [];
+  
+  achievements.forEach(ach => {
+    if (!unlocked.includes(ach.id) && ach.check()) {
+      unlocked.push(ach.id);
+      newlyUnlocked.push(ach.title);
+    }
+  });
+  
+  if (newlyUnlocked.length > 0) {
+    localStorage.setItem("champions70_achievements", JSON.stringify(unlocked));
+    alert(`🎉 NOVA CONQUISTA DESBLOQUEADA!\n\n${newlyUnlocked.join("\n")}`);
+  }
+}
+
+function renderAchievements() {
+  const container = document.getElementById("achievements-list");
+  if (!container) return;
+  const unlocked = JSON.parse(localStorage.getItem("champions70_achievements") || "[]");
+  
+  const achievements = [
+    { id: "msn", title: "Trio MSN 🇧🇷🇦🇷🇺🇾", desc: "Escalar Lionel Messi, Luis Suárez e Neymar Jr no mesmo time do draft." },
+    { id: "bbc", title: "Trio BBC 🇵🇹🇫🇷🇬🇧", desc: "Escalar Cristiano Ronaldo, Karim Benzema e Gareth Bale no mesmo time do draft." },
+    { id: "tikitaka", title: "Mestres do Tiki-Taka 🇪🇸", desc: "Escalar Xavi Hernández, Andrés Iniesta e Lionel Messi no mesmo time do draft." },
+    { id: "bayern", title: "A Dinastia Bávara 🇩🇪", desc: "Escalar Manuel Neuer, Philipp Lahm e R. Lewandowski no mesmo time do draft." },
+    { id: "milan", title: "Defesa Imortal do Milan 🇮🇹", desc: "Escalar Dida, Alessandro Nesta e Paolo Maldini no mesmo time do draft." }
+  ];
+  
+  container.innerHTML = achievements.map(ach => {
+    const isUnlocked = unlocked.includes(ach.id);
+    return `
+      <div class="achievement-item ${isUnlocked ? 'unlocked' : 'locked'}" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border-radius: 12px; background: ${isUnlocked ? 'rgba(255, 215, 0, 0.1)' : 'rgba(255, 255, 255, 0.02)'}; border: 1.5px solid ${isUnlocked ? 'var(--color-secondary)' : 'rgba(255, 255, 255, 0.08)'}; box-shadow: ${isUnlocked ? '0 0 10px rgba(255, 215, 0, 0.2)' : 'none'};">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <strong style="font-size: 0.95rem; color: ${isUnlocked ? 'var(--color-secondary)' : '#fff'};">${ach.title}</strong>
+          <span style="font-size: 0.8rem; color: var(--color-text-muted);">${ach.desc}</span>
+        </div>
+        <div style="font-size: 1.5rem;">${isUnlocked ? '🔓' : '🔒'}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function copyTacticalLineup() {
+  const players = FORMATIONS[state.formation].map(slot => {
+    const p = state.draftRoster[slot.id];
+    return p ? `${slot.label}: ${p.name} (${p.rating} | ${p.originTeam})` : `${slot.label}: Vago`;
+  }).join("\n");
+  
+  const textToCopy = `🏆 UEFA Champions League Draft 7-0 🏆\n` +
+                     `⚽ Treinador: ${state.managerName}\n` +
+                     `📐 Formação: ${state.formation}\n` +
+                     `🔥 Química: ${document.getElementById("roster-chemistry").innerText}\n` +
+                     `📋 Escalação Titular:\n${players}\n\n` +
+                     `Monte o seu em champions70.vercel.app!`;
+                     
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    const msg = document.getElementById("copy-success-msg");
+    if (msg) {
+      msg.style.display = "block";
+      setTimeout(() => {
+        msg.style.display = "none";
+      }, 2500);
+    }
+  }).catch(err => {
+    console.error("Failed to copy lineup", err);
+    alert("Erro ao copiar escalação. Aqui está:\n\n" + textToCopy);
+  });
+}
+
+// 12. ENTRY POINT / EVENT LISTENERS
 window.addEventListener("DOMContentLoaded", () => {
   // Initialize starfield
   initStars();
@@ -1580,6 +1893,30 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btn-restart").addEventListener("click", () => {
     restartGame();
   });
+  
+  // Achievements Modal bindings
+  const showAchBtn = document.getElementById("btn-show-achievements");
+  if (showAchBtn) {
+    showAchBtn.addEventListener("click", () => {
+      renderAchievements();
+      document.getElementById("modal-achievements").classList.add("active");
+    });
+  }
+  
+  const closeAchBtn = document.getElementById("btn-close-achievements");
+  if (closeAchBtn) {
+    closeAchBtn.addEventListener("click", () => {
+      document.getElementById("modal-achievements").classList.remove("active");
+    });
+  }
+  
+  // Tactical Notebook Copy binding
+  const copyBtn = document.getElementById("btn-copy-lineup");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", () => {
+      copyTacticalLineup();
+    });
+  }
   
   // Twinkle stars periodically resizing
   window.addEventListener("resize", initStars);

@@ -1346,3 +1346,102 @@ body.goal-flash-active {
     stroke-dashoffset: -20;
   }
 }
+
+/* ==========================================================================
+   UPGRADES V2.2 - DYNAMIC THEMES, ANIMATIONS & ALMANAC
+   ========================================================================== */
+
+/* UI/UX Pro Max: Global Card & Slot transitions */
+.player-card, .selection-card-container, .pitch-slot {
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Gold and Common card classes */
+.card-ouro {
+  border: 2px solid #ffd700 !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.45) !important;
+  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.15) 0%, #030825 100%) !important;
+}
+
+.card-comum {
+  border: 1.5px solid var(--color-primary) !important;
+  box-shadow: var(--glow-celeste) !important;
+  background: linear-gradient(135deg, #09134a 0%, #030825 100%) !important;
+}
+
+/* Almanac Mode overall hiding */
+.rating.hidden {
+  display: none !important;
+}
+
+/* Flash Draw Pulse Animation */
+@keyframes flashSorteio {
+  0% {
+    box-shadow: 0 0 40px var(--cor-clube-1);
+    background-color: var(--cor-clube-1);
+  }
+  100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    background-color: var(--glass-bg);
+  }
+}
+
+.flash-sorteio-active {
+  animation: flashSorteio 1.0s cubic-bezier(0.1, 0.8, 0.3, 1) forwards !important;
+}
+
+/* Click Ripple Animation */
+@keyframes ripple-animation {
+  to {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple-animation 0.6s ease-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Slot Blink Animation */
+@keyframes slotBlink {
+  0% {
+    box-shadow: 0 0 25px var(--blink-color);
+    border-color: var(--blink-color);
+  }
+  50% {
+    box-shadow: 0 0 40px var(--blink-color), inset 0 0 20px var(--blink-color);
+    border-color: var(--blink-color);
+    background-color: var(--blink-color-alpha);
+  }
+  100% {
+    box-shadow: none;
+    border-color: transparent;
+  }
+}
+
+.slot-blink-active {
+  animation: slotBlink 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards !important;
+}
+
+/* Achievements Visuals */
+.achievement-item {
+  transition: all 0.3s ease;
+}
+
+.achievement-item:hover {
+  transform: translateY(-2px);
+}
+
+.achievement-item.locked {
+  filter: grayscale(0.8) opacity(0.6);
+}
+
+.achievement-item.unlocked {
+  filter: none;
+}
+
