@@ -102,6 +102,9 @@
             <div class="pitch-penalty-area-top"></div>
             <div class="pitch-penalty-area-bottom"></div>
             
+            <!-- SVG overlay for chemistry lines (Rule 1) -->
+            <svg id="chemistry-lines" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></svg>
+            
             <!-- Slots will be populated by JS -->
             <div class="pitch-slots-layer" id="pitch-slots-container"></div>
           </div>
@@ -184,6 +187,13 @@
             </div>
           </div>
 
+          <!-- Live Tactical adjustment buttons (Rule 3) -->
+          <div class="live-tactics-container" id="live-tactics-panel">
+            <button class="tactic-btn" data-style="defensivo">🛡️ Defensivo</button>
+            <button class="tactic-btn" data-style="equilibrado">⚖️ Equilibrado</button>
+            <button class="tactic-btn" data-style="ofensivo">⚔️ Ataque Total</button>
+          </div>
+          
           <!-- Live Log Feed -->
           <div class="live-log-box" id="sim-log-box">
             <div class="log-entry system-info">Aguardando o pontapé inicial...</div>

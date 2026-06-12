@@ -197,6 +197,7 @@ const state = {
   currentCandidates: [],
   selectedCandidate: null,
   skipsRemaining: 3, // Pulos de time (Rule 2)
+  chemistryBonusFactor: 1.0, // Multiplicador de força por conexões (Rule 1)
   
   // Tournament State
   tournamentRound: 0, // 0 to 7
@@ -208,6 +209,7 @@ const state = {
   groupStandings: [], // User and 3 opponents
   currentMatchOpponentName: "",
   currentMatchOpponentRating: 85,
+  currentMatchMinute: 0, // Minuto atual da partida em tempo real (Rule 3)
   simIntervalId: null,
   opponentsList: [], // Pre-generated opponents for the knockout stages
 };
@@ -591,6 +593,7 @@ function handleSlotClick(slot) {
   
   // Update stats
   updateRosterStats();
+  drawChemistryLines();
   
   // Move to next round
   state.draftRound++;
@@ -626,6 +629,33 @@ function updateRosterStats() {
   
   chem = Math.min(100, Math.round(chem));
   document.getElementById("roster-chemistry").innerText = `${chem}%`;
+  
+  // Chemistry connection count / synergy (Rule 1)
+  let connectionCount = 0;
+  const teamGroups = {};
+  const slots = FORMATIONS[state.formation];
+  
+  slots.forEach(slot => {
+    const player = state.draftRoster[slot.id];
+    if (player && player.originTeam) {
+      if (!teamGroups[player.originTeam]) {
+        teamGroups[player.originTeam] = 0;
+      }
+      teamGroups[player.originTeam]++;
+    }
+  });
+  
+  Object.keys(teamGroups).forEach(teamName => {
+    const count = teamGroups[teamName];
+    if (count >= 2) {
+      // Combination of count choose 2
+      const connections = (count * (count - 1)) / 2;
+      connectionCount += connections;
+    }
+  });
+  
+  // +5% bonus factor per connection
+  state.chemistryBonusFactor = 1 + (connectionCount * 0.05);
 }
 
 // 7. TOURNAMENT SIMULATION ENGINE
@@ -844,12 +874,26 @@ function startMatchSimulation() {
   actionBtn.disabled = true;
   actionBtn.innerText = "Simulando...";
   
+  // Show live tactical adjustment panel (Rule 3)
+  const tacticsPanel = document.getElementById("live-tactics-panel");
+  if (tacticsPanel) {
+    tacticsPanel.style.display = "flex";
+    // Highlight pre-selected style
+    tacticsPanel.querySelectorAll(".tactic-btn").forEach(btn => {
+      btn.classList.remove("selected");
+      if (btn.getAttribute("data-style") === state.playstyle) {
+        btn.classList.add("selected");
+      }
+    });
+  }
+  
   const logBox = document.getElementById("sim-log-box");
   logBox.innerHTML = "";
   
   addLog(0, "A partida começou! O árbitro apita o início do jogo.", "system-info");
   
   let currentMinute = 0;
+  state.currentMatchMinute = 0;
   let userGoals = 0;
   let oppGoals = 0;
   
@@ -857,22 +901,9 @@ function startMatchSimulation() {
   const userAvgRating = parseInt(document.getElementById("roster-avg-rating").innerText) || 85;
   const userChemistry = parseInt(document.getElementById("roster-chemistry").innerText) || 50;
   
-  // User attack and defense ratings
-  let userPower = userAvgRating + (userChemistry / 10);
+  // User attack and defense ratings with chemistry connection bonus factor (Rule 1)
+  let userPower = (userAvgRating + (userChemistry / 10)) * (state.chemistryBonusFactor || 1.0);
   let oppPower = state.currentMatchOpponentRating;
-  
-  // Strategy bonuses/penalties
-  let userOffenseFactor = 1.0;
-  let userDefenseFactor = 1.0;
-  let oppOffenseFactor = 1.0;
-  
-  if (state.playstyle === "defensivo") {
-    userDefenseFactor = 0.5; // Opponent has 50% less chance to score (clean sheets help!)
-    userOffenseFactor = 0.7; // User has 30% less chance to score
-  } else if (state.playstyle === "ofensivo") {
-    userOffenseFactor = 1.4; // User scores 40% more easily
-    oppOffenseFactor = 1.3;  // Opponent scores 30% more easily (vulnerable defense)
-  }
   
   // Drafted rosters lists for dynamic narratives
   const myRoster = Object.values(state.draftRoster);
@@ -884,19 +915,39 @@ function startMatchSimulation() {
     return roster.length > 0 ? roster[Math.floor(Math.random() * roster.length)].name : "Jogador";
   };
   
-  // Simulation ticks
+  // Simulation ticks (200ms tick = ~6 seconds total simulation - Rule 2)
   state.simIntervalId = setInterval(() => {
-    currentMinute += Math.floor(Math.random() * 5) + 3; // ticks between 3 and 7 mins
+    currentMinute += Math.floor(Math.random() * 3) + 2; // ticks 2-4 mins
+    state.currentMatchMinute = currentMinute;
     
     if (currentMinute >= 90) {
       currentMinute = 90;
+      state.currentMatchMinute = 90;
       clearInterval(state.simIntervalId);
+      state.simIntervalId = null;
+      
+      // Hide live tactics panel at the end of the simulation
+      if (tacticsPanel) tacticsPanel.style.display = "none";
+      
       endMatchSimulation(userGoals, oppGoals);
       return;
     }
     
     // Update timer UI
     document.getElementById("sim-time-ticker").innerText = `${currentMinute}'`;
+    
+    // Strategy bonuses/penalties - Evaluated in real-time at each tick! (Rule 3)
+    let userOffenseFactor = 1.0;
+    let userDefenseFactor = 1.0;
+    let oppOffenseFactor = 1.0;
+    
+    if (state.playstyle === "defensivo") {
+      userDefenseFactor = 0.5; // Opponent has 50% less chance to score (clean sheets help!)
+      userOffenseFactor = 0.7; // User has 30% less chance to score
+    } else if (state.playstyle === "ofensivo") {
+      userOffenseFactor = 1.4; // User scores 40% more easily
+      oppOffenseFactor = 1.3;  // Opponent scores 30% more easily (vulnerable defense)
+    }
     
     // Roll for event occurrence (typical Champions league has 2-5 major attacks per match)
     const rollEvent = Math.random();
@@ -913,6 +964,9 @@ function startMatchSimulation() {
         userGoals++;
         document.getElementById("sim-scoreboard").innerText = `${userGoals} - ${oppGoals}`;
         addLog(currentMinute, `⚽ GOOOL! Passe de ${midfielder.split(" ").pop()} para finalização certeira de ${attacker}!`, "goal-event");
+        
+        // Neon green goal flash (Super Poderes)
+        triggerGoalFlash();
       } else {
         addLog(currentMinute, `⚠️ Quase! ${attacker} chuta forte da entrada da área, mas a bola sai tirando tinta da trave!`, "system-info");
       }
@@ -940,7 +994,7 @@ function startMatchSimulation() {
       const p2 = getRandPlayer(oppRoster, "MEI");
       addLog(currentMinute, `⚡ Disputa dura no meio-campo! ${p1.split(" ").pop()} desarma ${p2.split(" ").pop()} com classe e organiza a saída de bola.`, "system-info");
     }
-  }, 150);
+  }, 200);
 }
 
 function addLog(minute, text, className) {
@@ -1286,8 +1340,104 @@ function restartGame() {
   // Hide modal
   document.getElementById("tela-game-over").classList.remove("active");
   
+  // Clear chemistry lines on restart
+  const svg = document.getElementById("chemistry-lines");
+  if (svg) svg.innerHTML = "";
+  
   // Transition back to config screen instantly retaining manager details
   showScreen("tela-config");
+}
+
+// 10. EXTRA HELPERS (CHEMISTRY & TACTICS)
+function drawChemistryLines() {
+  const svg = document.getElementById("chemistry-lines");
+  if (!svg) return;
+  
+  // Clear previous lines
+  svg.innerHTML = "";
+  
+  const pitch = document.getElementById("pitch-view");
+  if (!pitch) return;
+  const pitchRect = pitch.getBoundingClientRect();
+  
+  // Group roster slotIds by originTeam
+  const teamGroups = {};
+  const slots = FORMATIONS[state.formation];
+  
+  slots.forEach(slot => {
+    const player = state.draftRoster[slot.id];
+    if (player && player.originTeam) {
+      if (!teamGroups[player.originTeam]) {
+        teamGroups[player.originTeam] = [];
+      }
+      teamGroups[player.originTeam].push(slot.id);
+    }
+  });
+  
+  // Draw connection lines for any group with 2 or more players
+  Object.keys(teamGroups).forEach(teamName => {
+    const slotIds = teamGroups[teamName];
+    if (slotIds.length >= 2) {
+      // Draw lines between every unique pair in this group
+      for (let i = 0; i < slotIds.length; i++) {
+        for (let j = i + 1; j < slotIds.length; j++) {
+          const el1 = document.getElementById(`slot-${slotIds[i]}`);
+          const el2 = document.getElementById(`slot-${slotIds[j]}`);
+          
+          if (el1 && el2) {
+            const r1 = el1.getBoundingClientRect();
+            const r2 = el2.getBoundingClientRect();
+            
+            // Center coordinates relative to the pitch container
+            const x1 = r1.left - pitchRect.left + r1.width / 2;
+            const y1 = r1.top - pitchRect.top + r1.height / 2;
+            const x2 = r2.left - pitchRect.left + r2.width / 2;
+            const y2 = r2.top - pitchRect.top + r2.height / 2;
+            
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x1.toFixed(1));
+            line.setAttribute("y1", y1.toFixed(1));
+            line.setAttribute("x2", x2.toFixed(1));
+            line.setAttribute("y2", y2.toFixed(1));
+            line.setAttribute("class", "chem-line");
+            
+            svg.appendChild(line);
+          }
+        }
+      }
+    }
+  });
+}
+
+function triggerGoalFlash() {
+  document.body.classList.add("goal-flash-active");
+  setTimeout(() => {
+    document.body.classList.remove("goal-flash-active");
+  }, 800);
+}
+
+function initLiveTacticsEvents() {
+  const panel = document.getElementById("live-tactics-panel");
+  if (!panel) return;
+  
+  panel.querySelectorAll(".tactic-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const newStyle = btn.getAttribute("data-style");
+      
+      // Update state
+      state.playstyle = newStyle;
+      
+      // Highlight selected button
+      panel.querySelectorAll(".tactic-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      
+      // Add log inside current running match if it's active
+      if (state.simIntervalId) {
+        const currentMin = state.currentMatchMinute || 0;
+        addLog(currentMin, `📋 Comando Tático: Postura alterada para ${newStyle.toUpperCase()}!`, "system-info");
+      }
+    });
+  });
 }
 
 // 10. ENTRY POINT / EVENT LISTENERS
@@ -1326,6 +1476,12 @@ window.addEventListener("DOMContentLoaded", () => {
   if (skipBtn) {
     skipBtn.addEventListener("click", skipTeam);
   }
+  
+  // Live tactics button initialization (Rule 3)
+  initLiveTacticsEvents();
+  
+  // Recalculate chemistry lines on resize (Rule 1)
+  window.addEventListener("resize", drawChemistryLines);
   
   // Restart click
   document.getElementById("btn-restart").addEventListener("click", () => {

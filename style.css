@@ -1259,3 +1259,93 @@ header {
   0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 85, 0.5); }
   50% { box-shadow: 0 0 20px rgba(255, 0, 85, 0.9); }
 }
+
+/* ==========================================================================
+   LIVE TACTICAL BUTTONS & SCREEN FLASH (RULE 3)
+   ========================================================================== */
+.live-tactics-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.tactic-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 8px 16px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  user-select: none;
+}
+
+.tactic-btn:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--color-text-light);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.tactic-btn.selected {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.tactic-btn.selected[data-style="defensivo"] {
+  background: rgba(0, 255, 135, 0.1);
+  border-color: var(--color-success);
+  color: var(--color-success);
+  box-shadow: 0 0 10px rgba(0, 255, 135, 0.2);
+}
+
+.tactic-btn.selected[data-style="equilibrado"] {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.tactic-btn.selected[data-style="ofensivo"] {
+  background: rgba(255, 0, 85, 0.1);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  box-shadow: 0 0 10px rgba(255, 0, 85, 0.2);
+}
+
+/* Goal flash visual effect (Rule 3) */
+body.goal-flash-active {
+  animation: flashGreenBackground 0.8s ease-out;
+}
+
+@keyframes flashGreenBackground {
+  0% { background-color: var(--color-bg-deep); }
+  30% { background-color: rgba(0, 255, 135, 0.3); }
+  100% { background-color: var(--color-bg-deep); }
+}
+
+/* Chemistry lines styles (Rule 1) */
+.chem-line {
+  stroke: var(--color-secondary);
+  stroke-width: 2.5px;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+  stroke-dasharray: 6 4;
+  animation: chemDashFlow 1.5s linear infinite;
+  opacity: 0.85;
+}
+
+@keyframes chemDashFlow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
