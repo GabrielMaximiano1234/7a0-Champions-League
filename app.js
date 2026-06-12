@@ -51,11 +51,11 @@ const FORMATIONS = {
 // Helpers for Cross-Era Chemistry & Position Filtering
 function getBaseClubName(teamName) {
   if (!teamName) return "";
-  return teamName.replace(/\s+\d{4}(?:\/\d{2})?$/, "").trim();
+  return teamName.replace(/\s+\d{4}.*$/, "").trim();
 }
 
 // CLUB COLOR MAPPING (Rule 1 & 3)
-const CLUB_COLORS = {
+const teamColors = {
   "Real Madrid": { primaria: "#ffffff", secundaria: "#532e91", primaryRGB: "255, 255, 255", secondaryRGB: "83, 46, 145" },
   "Barcelona": { primaria: "#004d98", secundaria: "#a50044", primaryRGB: "0, 77, 152", secondaryRGB: "165, 0, 68" },
   "Milan": { primaria: "#ff0000", secundaria: "#000000", primaryRGB: "255, 0, 0", secondaryRGB: "0, 0, 0" },
@@ -81,6 +81,7 @@ const CLUB_COLORS = {
   "Benfica": { primaria: "#e30613", secundaria: "#ffffff", primaryRGB: "227, 6, 19", secondaryRGB: "255, 255, 255" },
   "Juventus": { primaria: "#ffffff", secundaria: "#000000", primaryRGB: "255, 255, 255", secondaryRGB: "0, 0, 0" }
 };
+const CLUB_COLORS = teamColors;
 const DEFAULT_COLORS = { primaria: "#00e5ff", secundaria: "#ffd700", primaryRGB: "0, 229, 255", secondaryRGB: "255, 215, 0" };
 
 function getClubColors(teamName) {
@@ -90,9 +91,9 @@ function getClubColors(teamName) {
   const clean = getBaseClubName(teamName).toLowerCase();
   
   // Substring checks both directions (Rule 1)
-  for (const key of Object.keys(CLUB_COLORS)) {
+  for (const key of Object.keys(teamColors)) {
     if (clean.includes(key.toLowerCase()) || key.toLowerCase().includes(clean)) {
-      return CLUB_COLORS[key];
+      return teamColors[key];
     }
   }
   
@@ -700,6 +701,12 @@ function renderCandidates() {
         </div>
       </div>
     `;
+
+    const card = cardContainer.querySelector(".player-card");
+    if (card) {
+      card.style.setProperty('--club-primary-rgb', colors.primaryRGB || rgb1);
+      card.style.setProperty('--club-secondary-rgb', colors.secondaryRGB || rgb2);
+    }
     
     cardContainer.addEventListener("click", () => {
       createRippleEffect(cardContainer, colors.primaria);
@@ -816,6 +823,12 @@ function handleSlotClick(slot) {
       <div class="team-name" style="font-size: 0.45rem; opacity: 0.7; margin-bottom: 2px;">${finalPlayer.originTeam.split(" ")[0]}</div>
     </div>
   `;
+
+  const card = slotEl.querySelector(".player-card");
+  if (card) {
+    card.style.setProperty('--club-primary-rgb', colors.primaryRGB || rgb1);
+    card.style.setProperty('--club-secondary-rgb', colors.secondaryRGB || rgb2);
+  }
   
   // Set blink variables on the slot element (Rule 4)
   let blinkColor = colors.primaria;

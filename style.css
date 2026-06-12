@@ -512,10 +512,10 @@ header {
   height: 100%;
   border-radius: 8px;
   position: relative;
-  background: linear-gradient(135deg, rgba(var(--club-primary-rgb, var(--cor-clube-1-rgb, 9, 19, 74)), 0.18) 0%, rgba(var(--club-secondary-rgb, var(--cor-clube-2-rgb, 3, 8, 37)), 0.10) 100%), #0d112b !important;
+  background: linear-gradient(135deg, rgba(var(--club-primary-rgb), 0.2) 0%, rgba(var(--club-secondary-rgb), 0.05) 100%), #0d112b !important;
   backdrop-filter: blur(8px) !important;
-  border: 1.5px solid rgba(var(--club-primary-rgb, var(--cor-clube-1-rgb, 0, 240, 255)), 0.35) !important;
-  box-shadow: 0 4px 15px rgba(var(--club-primary-rgb, var(--cor-clube-1-rgb, 0, 240, 255)), 0.12) !important;
+  border: 1.5px solid rgba(var(--club-primary-rgb), 0.4) !important;
+  box-shadow: 0 4px 15px rgba(var(--club-primary-rgb), 0.12) !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1365,9 +1365,9 @@ body.goal-flash-active {
 }
 
 .card-comum {
-  border: 1.5px solid rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.35) !important;
-  box-shadow: 0 4px 15px rgba(var(--cor-clube-1-rgb, 0, 240, 255), 0.1) !important;
-  background: #0d112b !important;
+  border: 1.5px solid rgba(var(--club-primary-rgb), 0.4) !important;
+  box-shadow: 0 4px 15px rgba(var(--club-primary-rgb), 0.1) !important;
+  background: linear-gradient(135deg, rgba(var(--club-primary-rgb), 0.2) 0%, rgba(var(--club-secondary-rgb), 0.05) 100%), #0d112b !important;
 }
 
 /* Almanac Mode overall hiding */
@@ -1517,7 +1517,7 @@ body.goal-flash-active {
   }
 }
 
-.slime-overlay {
+.slime-overlay, .slime-drip {
   position: absolute;
   top: -100%;
   left: 0;
@@ -1525,7 +1525,7 @@ body.goal-flash-active {
   height: 100%;
   pointer-events: none;
   z-index: 5;
-  background: linear-gradient(180deg, rgba(var(--club-primary-rgb, 0, 240, 255), 0.95) 0%, rgba(var(--club-secondary-rgb, 255, 215, 0), 0.6) 100%);
+  background: linear-gradient(180deg, rgba(var(--club-primary-rgb), 0.95) 0%, rgba(var(--club-secondary-rgb), 0.6) 100%) !important;
   clip-path: polygon(0% 0%, 100% 0%, 100% 60%, 92% 55%, 88% 85%, 80% 60%, 72% 92%, 64% 65%, 56% 80%, 48% 58%, 40% 88%, 32% 62%, 24% 78%, 16% 55%, 8% 85%, 0% 60%);
   
   /* UI/UX Pro Max Hardware Acceleration */
