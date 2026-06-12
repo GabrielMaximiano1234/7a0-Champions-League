@@ -6,86 +6,133 @@
 const SQUADS_DATABASE = {
   "Real Madrid 2017/18": [
     { name: "Keylor Navas", pos: "GOL", rating: 85 },
+    { name: "Dani Carvajal", pos: "DEF", rating: 88 },
+    { name: "Raphaël Varane", pos: "DEF", rating: 87 },
     { name: "Sergio Ramos", pos: "DEF", rating: 90 },
     { name: "Marcelo", pos: "DEF", rating: 88 },
-    { name: "Luka Modric", pos: "MEI", rating: 91 },
+    { name: "Casemiro", pos: "MEI", rating: 89 },
     { name: "Toni Kroos", pos: "MEI", rating: 89 },
+    { name: "Luka Modric", pos: "MEI", rating: 91 },
+    { name: "Isco Alarcón", pos: "MEI", rating: 86 },
+    { name: "Karim Benzema", pos: "ATA", rating: 89 },
     { name: "C. Ronaldo", pos: "ATA", rating: 95 }
   ],
   "Barcelona 2010/11": [
     { name: "Víctor Valdés", pos: "GOL", rating: 84 },
     { name: "Dani Alves", pos: "DEF", rating: 88 },
+    { name: "Gerard Piqué", pos: "DEF", rating: 88 },
     { name: "Carles Puyol", pos: "DEF", rating: 89 },
+    { name: "Éric Abidal", pos: "DEF", rating: 84 },
+    { name: "Sergio Busquets", pos: "MEI", rating: 87 },
     { name: "Xavi Hernández", pos: "MEI", rating: 92 },
     { name: "Andrés Iniesta", pos: "MEI", rating: 93 },
+    { name: "Pedro Rodríguez", pos: "ATA", rating: 85 },
+    { name: "David Villa", pos: "ATA", rating: 88 },
     { name: "Lionel Messi", pos: "ATA", rating: 96 }
   ],
   "Milan 2006/07": [
     { name: "Dida", pos: "GOL", rating: 85 },
+    { name: "Massimo Oddo", pos: "DEF", rating: 83 },
     { name: "Alessandro Nesta", pos: "DEF", rating: 90 },
     { name: "Paolo Maldini", pos: "DEF", rating: 91 },
+    { name: "M. Jankulovski", pos: "DEF", rating: 84 },
+    { name: "Gennaro Gattuso", pos: "MEI", rating: 86 },
     { name: "Andrea Pirlo", pos: "MEI", rating: 90 },
+    { name: "Massimo Ambrosini", pos: "MEI", rating: 84 },
     { name: "Clarence Seedorf", pos: "MEI", rating: 88 },
-    { name: "Kaká", pos: "ATA", rating: 94 }
+    { name: "Kaká", pos: "ATA", rating: 94 },
+    { name: "Filippo Inzaghi", pos: "ATA", rating: 87 }
   ],
   "Bayern Munique 2019/20": [
     { name: "Manuel Neuer", pos: "GOL", rating: 91 },
-    { name: "Alphonso Davies", pos: "DEF", rating: 86 },
+    { name: "Benjamin Pavard", pos: "DEF", rating: 84 },
+    { name: "Jérôme Boateng", pos: "DEF", rating: 85 },
     { name: "David Alaba", pos: "DEF", rating: 87 },
-    { name: "Thiago Alcântara", pos: "MEI", rating: 89 },
+    { name: "Alphonso Davies", pos: "DEF", rating: 86 },
+    { name: "Joshua Kimmich", pos: "MEI", rating: 89 },
+    { name: "Leon Goretzka", pos: "MEI", rating: 86 },
+    { name: "Serge Gnabry", pos: "ATA", rating: 87 },
     { name: "Thomas Müller", pos: "MEI", rating: 88 },
+    { name: "Kingsley Coman", pos: "ATA", rating: 86 },
     { name: "R. Lewandowski", pos: "ATA", rating: 93 }
   ],
   "Inter de Milão 2009/10": [
     { name: "Júlio César", pos: "GOL", rating: 89 },
+    { name: "Maicon Sisenando", pos: "DEF", rating: 89 },
     { name: "Lúcio", pos: "DEF", rating: 88 },
-    { name: "Javier Zanetti", pos: "DEF", rating: 87 },
-    { name: "Wesley Sneijder", pos: "MEI", rating: 91 },
+    { name: "Walter Samuel", pos: "DEF", rating: 87 },
+    { name: "Cristian Chivu", pos: "DEF", rating: 84 },
+    { name: "Javier Zanetti", pos: "MEI", rating: 87 },
     { name: "Esteban Cambiasso", pos: "MEI", rating: 86 },
+    { name: "Wesley Sneijder", pos: "MEI", rating: 91 },
+    { name: "Samuel Eto'o", pos: "ATA", rating: 90 },
+    { name: "Goran Pandev", pos: "ATA", rating: 84 },
     { name: "Diego Milito", pos: "ATA", rating: 90 }
   ],
   "Chelsea 2011/12": [
     { name: "Petr Cech", pos: "GOL", rating: 90 },
-    { name: "John Terry", pos: "DEF", rating: 89 },
+    { name: "José Bosingwa", pos: "DEF", rating: 81 },
+    { name: "David Luiz", pos: "DEF", rating: 85 },
+    { name: "Gary Cahill", pos: "DEF", rating: 84 },
     { name: "Ashley Cole", pos: "DEF", rating: 86 },
+    { name: "John Obi Mikel", pos: "MEI", rating: 82 },
     { name: "Frank Lampard", pos: "MEI", rating: 89 },
     { name: "Juan Mata", pos: "MEI", rating: 85 },
+    { name: "Salomon Kalou", pos: "ATA", rating: 82 },
+    { name: "Ryan Bertrand", pos: "DEF", rating: 80 },
     { name: "Didier Drogba", pos: "ATA", rating: 91 }
   ],
   "Manchester United 2007/08": [
     { name: "E. Van der Sar", pos: "GOL", rating: 88 },
+    { name: "Wes Brown", pos: "DEF", rating: 82 },
     { name: "Rio Ferdinand", pos: "DEF", rating: 89 },
     { name: "Nemanja Vidic", pos: "DEF", rating: 89 },
+    { name: "Patrice Evra", pos: "DEF", rating: 86 },
+    { name: "Owen Hargreaves", pos: "MEI", rating: 83 },
+    { name: "Michael Carrick", pos: "MEI", rating: 85 },
     { name: "Paul Scholes", pos: "MEI", rating: 88 },
-    { name: "Ryan Giggs", pos: "MEI", rating: 87 },
-    { name: "Wayne Rooney", pos: "ATA", rating: 91 }
+    { name: "C. Ronaldo", pos: "ATA", rating: 93 },
+    { name: "Wayne Rooney", pos: "ATA", rating: 91 },
+    { name: "Carlos Tévez", pos: "ATA", rating: 88 }
   ],
   "Liverpool 2018/19": [
     { name: "Alisson Becker", pos: "GOL", rating: 89 },
-    { name: "Virgil van Dijk", pos: "DEF", rating: 91 },
     { name: "Trent A.-Arnold", pos: "DEF", rating: 87 },
+    { name: "Joel Matip", pos: "DEF", rating: 85 },
+    { name: "Virgil van Dijk", pos: "DEF", rating: 91 },
+    { name: "Andrew Robertson", pos: "DEF", rating: 86 },
+    { name: "Fabinho Tavares", pos: "MEI", rating: 87 },
     { name: "Jordan Henderson", pos: "MEI", rating: 85 },
     { name: "G. Wijnaldum", pos: "MEI", rating: 84 },
     { name: "Mohamed Salah", pos: "ATA", rating: 90 },
+    { name: "Roberto Firmino", pos: "ATA", rating: 86 },
     { name: "Sadio Mané", pos: "ATA", rating: 89 }
   ],
   "Porto 2003/04": [
     { name: "Vítor Baía", pos: "GOL", rating: 84 },
+    { name: "Paulo Ferreira", pos: "DEF", rating: 84 },
+    { name: "Jorge Costa", pos: "DEF", rating: 83 },
     { name: "Ricardo Carvalho", pos: "DEF", rating: 88 },
     { name: "Nuno Valente", pos: "DEF", rating: 83 },
     { name: "Costinha", pos: "MEI", rating: 84 },
     { name: "Maniche", pos: "MEI", rating: 85 },
+    { name: "Pedro Mendes", pos: "MEI", rating: 82 },
     { name: "Deco", pos: "MEI", rating: 90 },
-    { name: "Derlei", pos: "ATA", rating: 86 }
+    { name: "Derlei", pos: "ATA", rating: 86 },
+    { name: "Carlos Alberto", pos: "ATA", rating: 83 }
   ],
   "Ajax 1994/95": [
     { name: "E. Van der Sar", pos: "GOL", rating: 85 },
-    { name: "Frank de Boer", pos: "DEF", rating: 87 },
+    { name: "Michael Reiziger", pos: "DEF", rating: 84 },
     { name: "Danny Blind", pos: "DEF", rating: 86 },
+    { name: "Frank Rijkaard", pos: "DEF", rating: 89 },
+    { name: "Frank de Boer", pos: "DEF", rating: 87 },
     { name: "Clarence Seedorf", pos: "MEI", rating: 86 },
     { name: "Edgar Davids", pos: "MEI", rating: 87 },
     { name: "Jari Litmanen", pos: "MEI", rating: 89 },
-    { name: "Patrick Kluivert", pos: "ATA", rating: 88 }
+    { name: "Finidi George", pos: "ATA", rating: 84 },
+    { name: "Marc Overmars", pos: "ATA", rating: 86 },
+    { name: "Ronald de Boer", pos: "ATA", rating: 85 }
   ]
 };
 
@@ -149,6 +196,7 @@ const state = {
   currentDrawnTeam: "",
   currentCandidates: [],
   selectedCandidate: null,
+  skipsRemaining: 3, // Pulos de time (Rule 2)
   
   // Tournament State
   tournamentRound: 0, // 0 to 7
@@ -285,6 +333,7 @@ function startDraft() {
   state.draftRoster = {};
   state.selectedPlayerNames.clear();
   state.selectedCandidate = null;
+  state.skipsRemaining = 3;
   
   // Set up manager info in right panel
   document.getElementById("roster-manager-name").innerText = state.managerName;
@@ -292,6 +341,9 @@ function startDraft() {
   
   // Render football pitch slots
   renderPitchSlots();
+  
+  // Update skip button to initial state
+  updateSkipButtonState();
   
   // Trigger first round
   nextDraftRound();
@@ -338,7 +390,7 @@ function renderPitchSlots() {
   });
 }
 
-function nextDraftRound() {
+function nextDraftRound(skippedTeamName = null) {
   if (state.draftRound > 11) {
     // Roster is fully drafted!
     initTournament();
@@ -356,10 +408,14 @@ function nextDraftRound() {
   let drawnTeam = "";
   let availableCandidates = [];
   
-  // Loop to find a team with unused players
+  // Loop to find a team with unused players (preventing skippedTeamName if provided - Rule 3)
   let attempts = 0;
-  while (attempts < 50) {
+  while (attempts < 100) {
     const randTeam = teamNames[Math.floor(Math.random() * teamNames.length)];
+    if (skippedTeamName && randTeam === skippedTeamName) {
+      attempts++;
+      continue;
+    }
     const teamPlayers = SQUADS_DATABASE[randTeam].filter(p => !state.selectedPlayerNames.has(p.name));
     
     if (teamPlayers.length > 0) {
@@ -387,6 +443,45 @@ function nextDraftRound() {
   
   // Remove glows
   clearSlotHighlights();
+}
+
+function skipTeam() {
+  if (state.skipsRemaining <= 0) return;
+  
+  state.skipsRemaining--;
+  
+  // Rotation transition effect on the skip button (UI/UX Pro Max)
+  const skipBtn = document.getElementById("btn-skip-team");
+  if (skipBtn) {
+    skipBtn.classList.add("spinning");
+    setTimeout(() => {
+      skipBtn.classList.remove("spinning");
+    }, 600);
+  }
+  
+  updateSkipButtonState();
+  
+  // Immediately draw another team (Rule 2 & 3)
+  nextDraftRound(state.currentDrawnTeam);
+}
+
+function updateSkipButtonState() {
+  const skipBtn = document.getElementById("btn-skip-team");
+  if (!skipBtn) return;
+  
+  // Set text
+  skipBtn.innerText = `🔄 Pular Time (${state.skipsRemaining} Restantes)`;
+  
+  // Remove all previous skips classes
+  skipBtn.className = "btn-skip";
+  
+  // Add glow based on remaining skips
+  if (state.skipsRemaining > 0) {
+    skipBtn.classList.add(`skips-${state.skipsRemaining}`);
+    skipBtn.disabled = false;
+  } else {
+    skipBtn.disabled = true;
+  }
 }
 
 function renderCandidates() {
@@ -1225,6 +1320,12 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btn-start-draft").addEventListener("click", () => {
     startDraft();
   });
+  
+  // Skip click
+  const skipBtn = document.getElementById("btn-skip-team");
+  if (skipBtn) {
+    skipBtn.addEventListener("click", skipTeam);
+  }
   
   // Restart click
   document.getElementById("btn-restart").addEventListener("click", () => {
