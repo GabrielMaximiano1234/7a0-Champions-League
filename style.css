@@ -528,8 +528,8 @@ header {
 }
 
 .player-card.gold-tier {
-  border: 2px solid #ffd700 !important;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.45) !important;
+  border: 2.5px solid #ffd700 !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5) !important;
 }
 
 .player-card .card-header-info {
@@ -1360,9 +1360,8 @@ body.goal-flash-active {
 
 /* Gold and Common card border styles (Rule 3) */
 .card-ouro {
-  border: 2px solid #ffd700 !important;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) !important;
-  background: #0d112b !important;
+  border: 2.5px solid #ffd700 !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5) !important;
 }
 
 .card-comum {
@@ -1503,34 +1502,39 @@ body.goal-flash-active {
   display: block;
 }
 
-/* UPGRADES V2.5 - LASER SWEEP (Rule 3) */
-@keyframes laserSweepAnim {
+/* UPGRADES V2.6 - SLIME OVERLAY DRIP REVEAL (Rule 3 & UI/UX Pro Max) */
+@keyframes slimeDripAnim {
   0% {
-    top: 0%;
-    opacity: 0;
-  }
-  10% {
+    transform: translateY(0) translateZ(0);
     opacity: 1;
   }
-  90% {
+  60% {
     opacity: 1;
   }
   100% {
-    top: 100%;
+    transform: translateY(200%) translateZ(0);
     opacity: 0;
   }
 }
 
-.laser-sweep {
+.slime-overlay {
   position: absolute;
+  top: -100%;
   left: 0;
   width: 100%;
-  height: 3px;
-  background: linear-gradient(to right, transparent, rgba(var(--club-primary-rgb, 0, 240, 255), 0.85), transparent);
-  box-shadow: 0 0 10px rgba(var(--club-primary-rgb, 0, 240, 255), 0.9);
+  height: 100%;
   pointer-events: none;
   z-index: 5;
-  animation: laserSweepAnim 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  background: linear-gradient(180deg, rgba(var(--club-primary-rgb, 0, 240, 255), 0.95) 0%, rgba(var(--club-secondary-rgb, 255, 215, 0), 0.6) 100%);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 60%, 92% 55%, 88% 85%, 80% 60%, 72% 92%, 64% 65%, 56% 80%, 48% 58%, 40% 88%, 32% 62%, 24% 78%, 16% 55%, 8% 85%, 0% 60%);
+  
+  /* UI/UX Pro Max Hardware Acceleration */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  
+  /* Smooth viscous slide animation */
+  animation: slimeDripAnim 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 

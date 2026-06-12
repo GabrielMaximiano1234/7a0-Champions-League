@@ -78,7 +78,8 @@ const CLUB_COLORS = {
   "Napoli": { primaria: "#12a0fc", secundaria: "#ffffff", primaryRGB: "18, 160, 252", secondaryRGB: "255, 255, 255" },
   "Marseille": { primaria: "#00a2e8", secundaria: "#ffffff", primaryRGB: "0, 162, 232", secondaryRGB: "255, 255, 255" },
   "Sevilla": { primaria: "#d41910", secundaria: "#ffffff", primaryRGB: "212, 25, 16", secondaryRGB: "255, 255, 255" },
-  "Benfica": { primaria: "#e30613", secundaria: "#ffffff", primaryRGB: "227, 6, 19", secondaryRGB: "255, 255, 255" }
+  "Benfica": { primaria: "#e30613", secundaria: "#ffffff", primaryRGB: "227, 6, 19", secondaryRGB: "255, 255, 255" },
+  "Juventus": { primaria: "#ffffff", secundaria: "#000000", primaryRGB: "255, 255, 255", secondaryRGB: "0, 0, 0" }
 };
 const DEFAULT_COLORS = { primaria: "#00e5ff", secundaria: "#ffd700", primaryRGB: "0, 229, 255", secondaryRGB: "255, 215, 0" };
 
@@ -687,7 +688,7 @@ function renderCandidates() {
     
     cardContainer.innerHTML = `
       <div class="player-card ${cardClass}">
-        <div class="laser-sweep"></div>
+        <div class="slime-overlay"></div>
         <div class="card-header-info">
           <span class="${ratingClass}">${ratingDisplay}</span>
           <span class="position">${player.pos}</span>
@@ -706,6 +707,11 @@ function renderCandidates() {
     });
     container.appendChild(cardContainer);
   });
+
+  // Cleanup slime overlay after animation completes (1.5s)
+  setTimeout(() => {
+    container.querySelectorAll(".slime-overlay").forEach(el => el.remove());
+  }, 1500);
 }
 
 function selectCandidate(index, element) {
@@ -800,7 +806,7 @@ function handleSlotClick(slot) {
   
   slotEl.innerHTML = `
     <div class="player-card ${cardClass}" style="border-radius: 8px;">
-      <div class="laser-sweep"></div>
+      <div class="slime-overlay"></div>
       <div class="card-header-info" style="font-size: 0.55rem; padding: 0 1px;">
         <span class="${ratingClass}" style="font-size: 0.75rem;">${ratingDisplay}</span>
         <span class="position" style="font-size: 0.5rem; padding: 0px 2px;">${finalPlayer.pos}</span>
@@ -838,6 +844,12 @@ function handleSlotClick(slot) {
   setTimeout(() => {
     slotEl.classList.remove("slot-blink-active");
   }, 1200);
+
+  // Cleanup slime overlay after animation completes (1.5s)
+  setTimeout(() => {
+    const slime = slotEl.querySelector(".slime-overlay");
+    if (slime) slime.remove();
+  }, 1500);
   
   // Update stats
   updateRosterStats();
