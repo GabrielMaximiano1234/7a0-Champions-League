@@ -93,12 +93,12 @@ header {
   font-size: 2.8rem;
   font-weight: 800;
   letter-spacing: 2px;
-  background: linear-gradient(135deg, var(--color-text-light) 40%, var(--color-primary) 70%, var(--color-secondary) 100%);
+  background: linear-gradient(135deg, #ffffff 20%, #ffd700 65%, #ffffff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
   margin-bottom: 5px;
-  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3));
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
 }
 
 .logo-container p {
@@ -1676,15 +1676,27 @@ body.goal-flash-active {
   font-size: clamp(2.5rem, 6vw, 4.2rem);
   font-weight: 800;
   letter-spacing: 5px;
-  background: linear-gradient(135deg, #ffffff 40%, var(--color-primary) 100%);
+  background: linear-gradient(135deg, #ffffff 20%, #ffd700 65%, #ffffff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
   margin-bottom: 25px;
-  filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.45));
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.45));
   text-align: center;
   z-index: 1;
   animation: landingFadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* UI/UX Pro Max Heroic highlight for number 26 */
+.heroic-number {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 15px rgba(255, 255, 255, 0.5);
+  font-size: 1.15em;
+  display: inline-block;
+  transform: translateY(-2px);
 }
 
 @keyframes landingFadeIn {

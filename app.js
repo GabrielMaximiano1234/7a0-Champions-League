@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHAMPIONS 7-0 - GAME LOGIC ENGINE
+   26 A 0 - GAME LOGIC ENGINE
    ========================================================================== */
 
 // 1. SQUADS DATABASE (Loaded from champions-7-0-db-v2.js)
@@ -360,18 +360,18 @@ function showScreen(screenId) {
 
 // Save credentials & high scores
 function saveManagerCredentials(name) {
-  localStorage.setItem("champions70_lastManager", name);
+  localStorage.setItem("draft26a0_lastManager", name);
 }
 
 function loadManagerCredentials() {
-  const name = localStorage.getItem("champions70_lastManager");
+  const name = localStorage.getItem("draft26a0_lastManager");
   if (name) {
     document.getElementById("username").value = name;
   }
 }
 
 function saveHighscore(scoreObj) {
-  const scores = JSON.parse(localStorage.getItem("champions70_leaderboard") || "[]");
+  const scores = JSON.parse(localStorage.getItem("draft26a0_leaderboard") || "[]");
   scores.push(scoreObj);
   // Sort: perfect run first, then wins, then goals diff
   scores.sort((a, b) => {
@@ -380,13 +380,13 @@ function saveHighscore(scoreObj) {
     return (b.goalsScored - b.goalsConceded) - (a.goalsScored - a.goalsConceded);
   });
   // Keep top 5
-  localStorage.setItem("champions70_leaderboard", JSON.stringify(scores.slice(0, 5)));
+  localStorage.setItem("draft26a0_leaderboard", JSON.stringify(scores.slice(0, 5)));
   renderLeaderboard();
 }
 
 function renderLeaderboard() {
   const container = document.getElementById("leaderboard-list");
-  const scores = JSON.parse(localStorage.getItem("champions70_leaderboard") || "[]");
+  const scores = JSON.parse(localStorage.getItem("draft26a0_leaderboard") || "[]");
   
   if (scores.length === 0) {
     container.innerHTML = `<li class="leaderboard-item" style="justify-content: center; color: var(--color-text-muted);">Nenhum recorde registrado ainda. Seja o primeiro!</li>`;
@@ -399,7 +399,7 @@ function renderLeaderboard() {
     else if (index === 1) trophy = "🥈";
     else if (index === 2) trophy = "🥉";
     
-    const perfectBadge = s.perfect ? `<span style="color: var(--color-secondary); font-weight: bold;">[7-0 Perfeito!]</span>` : "";
+    const perfectBadge = s.perfect ? `<span style="color: var(--color-secondary); font-weight: bold;">[26-0 Perfeito!]</span>` : "";
     return `
       <li class="leaderboard-item">
         <span><span class="rank">${trophy} #${index + 1}</span> ${s.name} ${perfectBadge}</span>
@@ -1908,19 +1908,19 @@ function triggerGameOver(isWinner, reason) {
     
     if (state.perfectCleanSheetRun) {
       box.classList.add("perfect-run");
-      titleEl.innerText = "Lenda do 7-0!";
+      titleEl.innerText = "Lenda do 26-0!";
       titleEl.className = "outcome-title victory";
       descEl.innerHTML = `
         🏆 <strong>DESAFIO PERFEITO CONCLUÍDO!</strong> 🏆<br><br>
         Você alcançou a glória máxima de 7 vitórias consecutivas <strong>sem sofrer nenhum gol</strong>.<br>
-        Seu time entrou para o hall dos imortais europeus!
+        Seu time entrou para o hall dos imortais da Liga de Elite!
       `;
     } else {
-      titleEl.innerText = "Campeão da Champions!";
+      titleEl.innerText = "Campeão da Liga de Elite!";
       titleEl.className = "outcome-title victory";
       descEl.innerHTML = `
-        Você ergueu a cobiçada "Orelhuda" após 7 batalhas intensas!<br><br>
-        No entanto, seu time sofreu gol(s) durante a jornada e não completou o desafio perfeito a zero (7-0).<br>
+        Você ergueu a Taça de Ouro da Liga de Elite após 7 batalhas intensas!<br><br>
+        No entanto, seu time sofreu gol(s) durante a jornada e não completou o desafio perfeito a zero (26-0).<br>
         Que tal tentar novamente para cravar o placar perfeito?
       `;
     }
@@ -1937,7 +1937,7 @@ function triggerGameOver(isWinner, reason) {
       `;
     } else {
       descEl.innerHTML = `
-        Seu time foi eliminado no mata-mata da Champions na rodada <strong>#${state.tournamentRound}</strong>.<br>
+        Seu time foi eliminado no mata-mata da Liga de Elite na rodada <strong>#${state.tournamentRound}</strong>.<br>
         A derrota eliminou suas esperanças de título. O estádio se cala, mas sempre há uma próxima temporada!
       `;
     }
@@ -2083,7 +2083,7 @@ function checkDraftAchievements() {
     }
   ];
   
-  const unlocked = JSON.parse(localStorage.getItem("champions70_achievements") || "[]");
+  const unlocked = JSON.parse(localStorage.getItem("draft26a0_achievements") || "[]");
   let newlyUnlocked = [];
   
   achievements.forEach(ach => {
@@ -2094,7 +2094,7 @@ function checkDraftAchievements() {
   });
   
   if (newlyUnlocked.length > 0) {
-    localStorage.setItem("champions70_achievements", JSON.stringify(unlocked));
+    localStorage.setItem("draft26a0_achievements", JSON.stringify(unlocked));
     alert(`🎉 NOVA CONQUISTA DESBLOQUEADA!\n\n${newlyUnlocked.join("\n")}`);
   }
 }
@@ -2102,7 +2102,7 @@ function checkDraftAchievements() {
 function renderAchievements() {
   const container = document.getElementById("achievements-list");
   if (!container) return;
-  const unlocked = JSON.parse(localStorage.getItem("champions70_achievements") || "[]");
+  const unlocked = JSON.parse(localStorage.getItem("draft26a0_achievements") || "[]");
   
   const achievements = [
     { id: "msn", title: "Trio MSN 🇧🇷🇦🇷🇺🇾", desc: "Escalar Lionel Messi, Luis Suárez e Neymar Jr no mesmo time do draft." },
@@ -2132,12 +2132,12 @@ function copyTacticalLineup() {
     return p ? `${slot.label}: ${p.name} (${p.rating} | ${p.originTeam})` : `${slot.label}: Vago`;
   }).join("\n");
   
-  const textToCopy = `🏆 UEFA Champions League Draft 7-0 🏆\n` +
+  const textToCopy = `🏆 Liga de Elite Draft 26-0 🏆\n` +
                      `⚽ Treinador: ${state.managerName}\n` +
                      `📐 Formação: ${state.formation}\n` +
                      `🔥 Química: ${document.getElementById("roster-chemistry").innerText}\n` +
                      `📋 Escalação Titular:\n${players}\n\n` +
-                     `Monte o seu em champions70.vercel.app!`;
+                     `Monte o seu time em 26a0.vercel.app!`;
                      
   navigator.clipboard.writeText(textToCopy).then(() => {
     const msg = document.getElementById("copy-success-msg");

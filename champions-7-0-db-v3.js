@@ -640,4 +640,4 @@ addTeam("Chelsea 2025/26", [
 
 // Expose database globally
 window.SQUADS_DATABASE = SQUADS_DATABASE;
-console.log("Champions 7-0 v3 Database loaded: 89 teams, 979 players.");
+console.log("26 a 0 v3 Database loaded: 89 teams, 979 players.");
