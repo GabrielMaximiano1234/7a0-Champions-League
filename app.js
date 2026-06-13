@@ -2654,7 +2654,7 @@ function resetCareerSeason() {
   enterCareerOffice();
 }
 
-function startCareerMatchSimulation() {
+function playCareerMatch() {
   state.draftRoster = { ...state.careerRoster };
   state.managerName = state.careerCoachName;
   state.formation = state.careerTactic;
@@ -3098,7 +3098,7 @@ window.addEventListener("DOMContentLoaded", () => {
     jogarBtn.addEventListener("click", () => {
       state.careerSelectedToReplaceSlot = null;
       clearCareerHighlights();
-      startCareerMatchSimulation();
+      playCareerMatch();
     });
   }
   
