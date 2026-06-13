@@ -2269,3 +2269,526 @@ body.goal-flash-active {
 }
 
 
+/* ==========================================================================
+   CONVERSÃO GLOBAL PARA O ESTILO RETRÔ CREME (Regra 2)
+   ========================================================================== */
+body {
+  background-color: #f4efe2 !important;
+  background-image: 
+    radial-gradient(rgba(17, 17, 17, 0.04) 1.5px, transparent 0),
+    radial-gradient(rgba(17, 17, 17, 0.04) 1.5px, transparent 0) !important;
+  background-size: 20px 20px !important;
+  background-position: 0 0, 10px 10px !important;
+  color: #111111 !important;
+}
+
+.stars-bg, .field-lines-bg {
+  display: none !important;
+}
+
+/* Header Text Styling Override */
+.logo-container h1 {
+  font-family: 'Anton', sans-serif !important;
+  font-size: 3rem !important;
+  color: #111111 !important;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+.logo-container p {
+  color: #555555 !important;
+  font-family: 'Anton', sans-serif !important;
+  letter-spacing: 2px !important;
+}
+
+/* Global Cards, Panels, Modals, and Tables Retro Styling */
+.card-panel, .lobby-card, .selection-box, .summary-panel, .bracket-panel, .simulation-panel, .mode-info-box {
+  background: #ffffff !important;
+  border: 2.5px solid #111111 !important;
+  box-shadow: 6px 6px 0px #111111 !important;
+  color: #111111 !important;
+  border-radius: 12px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.lobby-card {
+  box-shadow: 12px 12px 0px #111111 !important;
+}
+
+.title-accent {
+  color: #111111 !important;
+  font-family: 'Anton', sans-serif !important;
+  text-transform: uppercase !important;
+  border-bottom: 2.5px solid #111111 !important;
+  padding-bottom: 8px !important;
+}
+
+.title-accent span {
+  color: #ffd700 !important;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
+}
+
+.summary-title {
+  color: #111111 !important;
+  font-family: 'Anton', sans-serif !important;
+  text-transform: uppercase !important;
+  border-bottom: 2px solid #111111 !important;
+}
+
+.summary-row {
+  border-bottom: 1px dashed rgba(17, 17, 17, 0.1) !important;
+  padding: 4px 0 !important;
+}
+
+.summary-label {
+  color: #555555 !important;
+}
+
+.summary-value {
+  color: #111111 !important;
+}
+
+.summary-value.rating-score {
+  color: #c29b38 !important;
+  text-shadow: none !important;
+}
+
+/* Forms & Inputs */
+.input-group label {
+  font-family: 'Anton', sans-serif !important;
+  color: #111111 !important;
+  letter-spacing: 1px !important;
+}
+
+.input-field {
+  background: #ffffff !important;
+  border: 2.5px solid #111111 !important;
+  color: #111111 !important;
+  border-radius: 8px !important;
+  box-shadow: 3px 3px 0px #111111 !important;
+}
+
+.input-field:focus {
+  border-color: #ffd700 !important;
+  box-shadow: 3px 3px 0px #ffd700 !important;
+  background: #ffffff !important;
+}
+
+/* Retro Console Buttons (Regra 5) */
+.btn-primary, .btn-gold, .btn-skip, .btn-lobby-mode, .tactic-card, .btn-play-primary, .tactic-btn, #btn-action-match, #btn-restart, #btn-close-achievements, #btn-close-records, #btn-copy-lineup, .btn-retro-play {
+  font-family: 'Anton', sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  border: 2.5px solid #111111 !important;
+  box-shadow: 4px 4px 0px #111111 !important;
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border-radius: 8px !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+  outline: none !important;
+  cursor: pointer !important;
+  padding: 10px 20px !important;
+}
+
+.btn-primary, .btn-play-primary, #btn-iniciar-draft, #btn-action-match, .btn-retro-play {
+  background-color: #ffd700 !important;
+  color: #111111 !important;
+}
+
+/* Hover Physical Click Transition */
+.btn-primary:hover, .btn-gold:hover, .btn-skip:hover, .btn-lobby-mode:hover, .tactic-card:hover, .btn-play-primary:hover, .tactic-btn:hover, #btn-action-match:hover, #btn-restart:hover, #btn-close-achievements:hover, #btn-close-records:hover, #btn-copy-lineup:hover, .btn-retro-play:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0px #111111 !important;
+  background-color: #fffaf0 !important;
+}
+
+.btn-primary:hover, .btn-play-primary:hover, #btn-iniciar-draft:hover, #btn-action-match:hover, .btn-retro-play:hover {
+  background-color: #ffea75 !important;
+}
+
+/* Active State Physical Click */
+.btn-primary:active, .btn-gold:active, .btn-skip:active, .btn-lobby-mode:active, .tactic-card:active, .btn-play-primary:active, .tactic-btn:active, #btn-action-match:active, #btn-restart:active, #btn-close-achievements:active, #btn-close-records:active, #btn-copy-lineup:active, .btn-retro-play:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0px #111111 !important;
+}
+
+/* Active selections in configs */
+.btn-lobby-mode.active, .tactic-card.active {
+  background-color: #ffd700 !important;
+  border-color: #111111 !important;
+  box-shadow: 4px 4px 0px #111111 !important;
+  color: #111111 !important;
+}
+
+.tactic-card.active .mini-pitch {
+  border-color: #111111 !important;
+}
+
+.tactic-card.active .mini-player {
+  background-color: #111111 !important;
+  box-shadow: none !important;
+}
+
+.mini-pitch {
+  background: #3b8a53 !important;
+  border: 1.5px solid #111111 !important;
+}
+
+.mini-player {
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* Tactical Pitch board (Regra 5) */
+.pitch-container {
+  background: #3b8a53 !important;
+  border: 3.5px solid #111111 !important;
+  border-radius: 16px !important;
+  box-shadow: 12px 12px 0px #111111 !important;
+  overflow: visible !important; /* allow rating circular medals to pop out */
+}
+
+.pitch-container::after {
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.pitch-midline {
+  background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.pitch-center-circle {
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.pitch-penalty-area-top, .pitch-penalty-area-bottom {
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.pitch-slot {
+  border: 2.5px dashed #111111 !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-radius: 10px !important;
+  overflow: visible !important;
+}
+
+.pitch-slot:hover {
+  border-color: #111111 !important;
+  background: rgba(255, 255, 255, 0.35) !important;
+  box-shadow: none !important;
+}
+
+.pitch-slot.active-select {
+  border-color: #ffd700 !important;
+  background: rgba(255, 215, 0, 0.25) !important;
+  box-shadow: 4px 4px 0px #111111 !important;
+}
+
+.pitch-slot .slot-label {
+  color: #111111 !important;
+  font-family: 'Anton', sans-serif !important;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.5) !important;
+}
+
+.pitch-slot .plus-icon {
+  color: #111111 !important;
+}
+
+/* Chemistry connection lines styling */
+.chem-line {
+  stroke: #111111 !important;
+  stroke-width: 3.5px !important;
+  stroke-dasharray: none !important;
+}
+
+/* Minimalist Player Cards (Regra 3) */
+.player-card {
+  background: linear-gradient(135deg, rgba(var(--club-primary-rgb), 0.12) 0%, rgba(var(--club-secondary-rgb), 0.05) 100%), #ffffff !important;
+  border: 2px solid #111111 !important;
+  box-shadow: 4px 4px 0px #111111 !important;
+  border-radius: 8px !important;
+  padding: 10px 5px 5px 5px !important;
+  color: #111111 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  overflow: visible !important;
+  position: relative !important;
+}
+
+.selection-card-container {
+  overflow: visible !important;
+  box-shadow: none !important;
+}
+
+.selection-card-container:hover {
+  transform: translateY(-5px) !important;
+}
+
+/* Overall Rating Medal in top right (Regra 3) */
+.player-card .rating {
+  position: absolute !important;
+  top: -8px !important;
+  right: -8px !important;
+  width: 28px !important;
+  height: 28px !important;
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border: 2px solid #111111 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: 'Anton', sans-serif !important;
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+  box-shadow: 2px 2px 0px #111111 !important;
+  z-index: 10 !important;
+  text-shadow: none !important;
+}
+
+/* Position Badge in top left */
+.player-card .position {
+  font-family: 'Anton', sans-serif !important;
+  font-size: 0.6rem !important;
+  font-weight: 800 !important;
+  background: #111111 !important;
+  color: #ffffff !important;
+  padding: 2px 5px !important;
+  border: 1.5px solid #111111 !important;
+  border-radius: 4px !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+}
+
+.player-card .name {
+  color: #111111 !important;
+  font-family: 'Anton', sans-serif !important;
+  text-shadow: none !important;
+  font-weight: 800 !important;
+  font-size: 0.72rem !important;
+  margin-top: 3px !important;
+  letter-spacing: 0.5px !important;
+}
+
+.player-card .team-name {
+  color: #555555 !important;
+  font-weight: bold !important;
+  font-size: 0.52rem !important;
+}
+
+/* Classic Mode Legends 90+ (Regra 3) */
+.player-card.gold-tier, .player-card.card-ouro {
+  border: 3px double #c29b38 !important;
+  outline: 2px solid #111111 !important;
+  box-shadow: 4px 4px 0px #111111 !important;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(194, 155, 56, 0.08) 100%), #ffffff !important;
+}
+
+/* Pop-Art Paint Slime drip (Regra 4) */
+.slime-overlay, .slime-drip {
+  background: linear-gradient(180deg, rgb(var(--club-primary-rgb)) 0%, rgb(var(--club-secondary-rgb)) 100%) !important;
+  filter: drop-shadow(2px 0 0 #111111) drop-shadow(-2px 0 0 #111111) drop-shadow(0 2px 0 #111111) drop-shadow(0 -2px 0 #111111) drop-shadow(0 3px 0 #111111) !important;
+}
+
+/* Logo gold dash pulse animation (Regra 1) */
+.logo-dash {
+  display: inline-block;
+  color: #ffd700;
+  animation: logoDashPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes logoDashPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Match simulator and scoreboards adaptations */
+.scoreboard-container {
+  background: #ffffff !important;
+  border: 2.5px solid #111111 !important;
+  box-shadow: 4px 4px 0px #111111 !important;
+  color: #111111 !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+}
+
+.score-display {
+  background: #ffffff !important;
+  border: 2.5px solid #111111 !important;
+  color: #111111 !important;
+  box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1) !important;
+}
+
+.team-score-name {
+  color: #111111 !important;
+  font-family: 'Anton', sans-serif !important;
+}
+
+.team-score-sub {
+  color: #555555 !important;
+}
+
+.time-ticker {
+  background: #111111 !important;
+  color: #ffffff !important;
+  border: 2px solid #111111 !important;
+  box-shadow: none !important;
+  font-family: 'Anton', sans-serif !important;
+}
+
+/* Live comments box */
+.live-log-box {
+  background: #ffffff !important;
+  border: 2.5px solid #111111 !important;
+  border-radius: 8px !important;
+  color: #111111 !important;
+}
+
+.log-entry {
+  border-bottom: 1.5px solid #111111 !important;
+}
+
+.log-entry .minute {
+  background: #111111 !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+  padding: 2px 5px !important;
+  font-family: 'Anton', sans-serif !important;
+}
+
+.log-entry.goal-event {
+  color: #2e7d32 !important;
+}
+
+.log-entry.goal-conceded {
+  color: #c62828 !important;
+}
+
+/* Modals Overlay & Panels */
+.modal-overlay {
+  background: rgba(244, 239, 226, 0.85) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+.game-over-panel {
+  background: #ffffff !important;
+  border: 3.5px solid #111111 !important;
+  box-shadow: 10px 10px 0px #111111 !important;
+  color: #111111 !important;
+  border-radius: 16px !important;
+}
+
+.game-over-panel.perfect-run {
+  border-color: #c29b38 !important;
+  box-shadow: 10px 10px 0px #111111 !important;
+  outline: 2px solid #111111 !important;
+}
+
+.outcome-title {
+  color: #111111 !important;
+  font-family: 'Anton', sans-serif !important;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+  text-shadow: none !important;
+}
+
+.outcome-desc {
+  color: #555555 !important;
+}
+
+.leaderboard-item, #achievements-list > div {
+  background: #ffffff !important;
+  border: 2px solid #111111 !important;
+  box-shadow: 4px 4px 0px #111111 !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+}
+
+.leaderboard-item .rank {
+  color: #ffd700 !important;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
+  font-family: 'Anton', sans-serif !important;
+}
+
+.leaderboard-item .score {
+  color: #111111 !important;
+}
+
+.standing-row {
+  background: #ffffff !important;
+  border: 2px solid #111111 !important;
+  box-shadow: 3px 3px 0px #111111 !important;
+  color: #111111 !important;
+  margin-bottom: 8px !important;
+  border-radius: 6px !important;
+}
+
+.standing-row.highlight {
+  background: #fffae6 !important;
+  border-color: #ffd700 !important;
+}
+
+.standing-row.highlight .team-name {
+  color: #111111 !important;
+  font-weight: bold !important;
+}
+
+/* Bracket tree visual representation */
+.bracket-match {
+  background: #ffffff !important;
+  border: 2px solid #111111 !important;
+  box-shadow: 3px 3px 0px #111111 !important;
+  margin-bottom: 8px !important;
+  border-radius: 6px !important;
+}
+
+.bracket-match.active-match {
+  border-color: #ffd700 !important;
+  background: #fffae6 !important;
+}
+
+.bracket-match.passed-win {
+  border-color: #2e7d32 !important;
+}
+
+.bracket-match.passed-loss {
+  border-color: #c62828 !important;
+}
+
+/* Status Tracker */
+.tracker-box {
+  background: #ffffff !important;
+  border: 2px solid #111111 !important;
+  box-shadow: 3px 3px 0px #111111 !important;
+  border-radius: 8px !important;
+}
+
+.tracker-val.clean-sheet-active {
+  color: #2e7d32 !important;
+}
+
+.tracker-val.clean-sheet-broken {
+  color: #c62828 !important;
+}
+
+.tracker-label {
+  color: #555555 !important;
+  font-family: 'Anton', sans-serif !important;
+}
+
+/* Copy Lineup elements */
+#copy-success-msg {
+  color: #2e7d32 !important;
+  font-weight: bold !important;
+}
