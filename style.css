@@ -1767,41 +1767,193 @@ body.goal-flash-active {
   line-height: 1.4;
 }
 
-#btn-iniciar-jogo {
-  background: linear-gradient(135deg, var(--color-primary) 0%, #0077ff 100%);
-  color: var(--color-bg-deep);
+/* ==========================================================================
+   ARCADE CONSOLE LOBBY STYLING (LOBBY DO 7A0 ORIGINAL)
+   ========================================================================== */
+.lobby-card {
+  background: rgba(10, 15, 40, 0.7);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding: 30px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 820px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  animation: zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 1;
+}
+
+.lobby-grid {
+  display: grid;
+  grid-template-columns: 1.10fr 0.90fr;
+  gap: 30px;
+  margin-bottom: 15px;
+}
+
+.lobby-col-left, .lobby-col-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.lobby-modes-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.btn-lobby-mode {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 8px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-align: center;
+  font-family: var(--font-main);
+  outline: none;
+}
+
+.btn-lobby-mode:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+}
+
+.btn-lobby-mode.active {
+  border-color: #ffd700 !important;
+  background: rgba(255, 215, 0, 0.1) !important;
+  color: #ffd700 !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.25), inset 0 0 5px rgba(255, 215, 0, 0.1) !important;
+}
+
+.btn-lobby-mode span {
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.btn-lobby-mode small {
+  font-size: 0.65rem;
+  opacity: 0.75;
+}
+
+.tactic-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.tactic-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  outline: none;
+}
+
+.tactic-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-2px);
+}
+
+.tactic-card.active {
+  border-color: #ffd700 !important;
+  background: rgba(255, 215, 0, 0.08) !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.25), inset 0 0 8px rgba(255, 215, 0, 0.1) !important;
+}
+
+.mini-pitch {
+  width: 75px;
+  height: 105px;
+  background: radial-gradient(circle, #0e1b54 0%, #04092b 100%);
+  border: 1.5px solid rgba(0, 240, 255, 0.25);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.mini-player {
+  width: 5px;
+  height: 5px;
+  background: #00f0ff;
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 4px #00f0ff;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tactic-card.active .mini-player {
+  background: #ffd700;
+  box-shadow: 0 0 4px #ffd700;
+}
+
+.tactic-card.active .mini-pitch {
+  border-color: #ffd700;
+}
+
+.tactic-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.tactic-card.active .tactic-name {
+  color: #ffd700;
+}
+
+.btn-play-primary {
+  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+  color: #03061c;
   border: none;
   border-radius: 50px;
   font-size: 1.25rem;
   font-weight: 800;
-  padding: 16px 55px;
+  padding: 15px 45px;
   cursor: pointer;
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.35);
   transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  z-index: 1;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-family: var(--font-main);
-  animation: playPulse 2.5s infinite ease-in-out;
   outline: none;
+  animation: playGoldPulse 2.5s infinite ease-in-out;
 }
 
-#btn-iniciar-jogo:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.75), 0 8px 25px rgba(0, 0, 0, 0.6);
-  background: linear-gradient(135deg, #00ff87 0%, var(--color-primary) 100%);
+.btn-play-primary:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.75), 0 8px 25px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, #ffffff 0%, #ffd700 100%);
 }
 
-#btn-iniciar-jogo:active {
+.btn-play-primary:active {
   transform: translateY(1px) scale(0.98);
 }
 
-@keyframes playPulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(0, 240, 255, 0.65);
+@keyframes playGoldPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.35); }
+  50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.65); }
+}
+
+@media (max-width: 768px) {
+  .lobby-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 

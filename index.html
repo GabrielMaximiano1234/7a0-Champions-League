@@ -21,102 +21,117 @@
       </div>
     </header>
 
-    <!-- SPA: LANDING PAGE (Rule 2) -->
+    <!-- SPA: LANDING PAGE (LOBBY SCREEN) -->
     <div id="tela-inicio" class="landing-page-section">
       <div class="landing-logo"><span class="heroic-number">26a0</span></div>
-      <div class="landing-card">
-        <div class="landing-mode-item">
-          <h3>🏆 Clássico</h3>
-          <p>Monte elencos históricos de 75 times com ratings visíveis.</p>
+      
+      <div class="lobby-card">
+        <h2 class="title-accent" style="margin-bottom: 20px;">Lobby de <span>Configuração</span></h2>
+        
+        <div class="lobby-grid">
+          <!-- Left Column: Coach & Game Mode -->
+          <div class="lobby-col-left">
+            <!-- Coach Name -->
+            <div class="input-group">
+              <label for="coach-name-input">Nome do Treinador</label>
+              <input type="text" id="coach-name-input" class="input-field" placeholder="Ex: Mister Guardiola" autocomplete="off">
+            </div>
+            
+            <!-- Game Mode -->
+            <div class="input-group" style="margin-top: 15px;">
+              <label>Modo de Jogo</label>
+              <div class="lobby-modes-container">
+                <button type="button" class="btn-lobby-mode active" data-mode="classic">
+                  <span>🏆 Clássico</span>
+                  <small>Ratings visíveis</small>
+                </button>
+                <button type="button" class="btn-lobby-mode" data-mode="almanac">
+                  <span>📖 Almanaque</span>
+                  <small>Ratings ocultos</small>
+                </button>
+                <button type="button" class="btn-lobby-mode btn-mode-atual" id="btn-lobby-mode-atual" data-mode="atual">
+                  <span>⚡ Atual (2026)</span>
+                  <small>Temporada 2025/26</small>
+                </button>
+              </div>
+              <div class="mode-info-box" id="lobby-mode-desc" style="margin-top: 10px; margin-bottom: 0;">
+                <strong>Modo Clássico:</strong> Os ratings reais e qualidades dos jogadores são mostrados nas cartas para guiar suas decisões.
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Column: Tactical Formations -->
+          <div class="lobby-col-right">
+            <div class="input-group">
+              <label>Formação Tática</label>
+              <div class="tactic-cards-grid">
+                <div class="tactic-card active" data-tactic="4-3-3">
+                  <div class="mini-pitch">
+                    <div class="mini-player" style="top: 85%; left: 50%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 18%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 39%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 61%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 82%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 28%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 50%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 72%;"></div>
+                    <div class="mini-player" style="top: 20%; left: 18%;"></div>
+                    <div class="mini-player" style="top: 15%; left: 50%;"></div>
+                    <div class="mini-player" style="top: 20%; left: 82%;"></div>
+                  </div>
+                  <div class="tactic-name">4-3-3</div>
+                </div>
+                
+                <div class="tactic-card" data-tactic="4-4-2">
+                  <div class="mini-pitch">
+                    <div class="mini-player" style="top: 85%; left: 50%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 18%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 39%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 61%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 82%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 18%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 39%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 61%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 82%;"></div>
+                    <div class="mini-player" style="top: 20%; left: 33%;"></div>
+                    <div class="mini-player" style="top: 20%; left: 67%;"></div>
+                  </div>
+                  <div class="tactic-name">4-4-2</div>
+                </div>
+                
+                <div class="tactic-card" data-tactic="3-5-2">
+                  <div class="mini-pitch">
+                    <div class="mini-player" style="top: 85%; left: 50%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 25%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 50%;"></div>
+                    <div class="mini-player" style="top: 65%; left: 75%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 15%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 36%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 50%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 64%;"></div>
+                    <div class="mini-player" style="top: 45%; left: 85%;"></div>
+                    <div class="mini-player" style="top: 20%; left: 33%;"></div>
+                    <div class="mini-player" style="top: 20%; left: 67%;"></div>
+                  </div>
+                  <div class="tactic-name">3-5-2</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="landing-mode-item">
-          <h3>📖 Almanaque</h3>
-          <p>Teste suas táticas e monte seu esquadrão às cegas com overalls ocultos.</p>
+        
+        <!-- Bottom Row: Achievements & Records modals toggles -->
+        <div class="lobby-bottom-row" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 15px;">
+          <button type="button" id="btn-lobby-achievements" class="btn-skip" style="border-color: var(--color-secondary); color: var(--color-secondary);">🏆 Galeria de Conquistas</button>
+          <button type="button" id="btn-lobby-records" class="btn-skip" style="border-color: var(--color-primary); color: var(--color-primary);">📊 Galeria de Recordes</button>
         </div>
-        <div class="landing-mode-item">
-          <h3>⚡ Atual (2026)</h3>
-          <p>Jogue com os super times e lendas da temporada atual.</p>
+        
+        <!-- Action Button -->
+        <div style="text-align: center; margin-top: 25px;">
+          <button type="button" id="btn-iniciar-draft" class="btn-play-primary">INICIAR DRAFT ➔</button>
         </div>
       </div>
-      <button type="button" id="btn-iniciar-jogo">JOGAR ➔</button>
     </div>
-
-    <!-- SPA: LOGIN SCREEN -->
-    <section id="tela-login" class="screen">
-      <div class="card-panel">
-        <h2 class="title-accent">Acesso ao <span>Vestiário</span></h2>
-        
-        <div class="input-group">
-          <label for="username">Nome do Treinador</label>
-          <input type="text" id="username" class="input-field" placeholder="Ex: Guardiola do Cerrado" autocomplete="off">
-        </div>
-
-        <button id="btn-login" class="btn-primary">
-          <span>Entrar no Vestiário</span>
-        </button>
-
-        <!-- Leaderboard / Recordes -->
-        <div class="leaderboard-section">
-          <h3 class="leaderboard-title">🏆 Galeria de Campeões (Recordes)</h3>
-          <ul class="leaderboard-list" id="leaderboard-list">
-            <!-- Dynamic list generated by JS -->
-            <li class="leaderboard-item" style="justify-content: center; color: var(--color-text-muted);">
-              Nenhum recorde registrado ainda. Seja o primeiro!
-            </li>
-          </ul>
-        </div>
-        
-        <div class="achievements-section" style="margin-top: 20px; text-align: center;">
-          <button id="btn-show-achievements" class="btn-primary btn-gold" style="padding: 10px 20px; font-size: 0.9rem; max-width: 250px; margin: 0 auto;">
-            <span>🏆 Galeria de Conquistas</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- SPA: CONFIGURATION SCREEN -->
-    <section id="tela-config" class="screen">
-      <div class="card-panel">
-        <h2 class="title-accent">Configuração do <span>Time</span></h2>
-
-        <!-- Tactical Formation -->
-        <div class="input-group">
-          <label>Formação Tática</label>
-          <div class="config-options" id="formation-options">
-            <div class="config-btn selected" data-value="4-3-3">4-3-3</div>
-            <div class="config-btn" data-value="4-4-2">4-4-2</div>
-            <div class="config-btn" data-value="3-5-2">3-5-2</div>
-          </div>
-        </div>
-
-        <!-- Playstyle -->
-        <div class="input-group">
-          <label>Estilo de Jogo</label>
-          <div class="config-options" id="playstyle-options">
-            <div class="config-btn" data-value="defensivo">Defensivo</div>
-            <div class="config-btn selected" data-value="equilibrado">Equilibrado</div>
-            <div class="config-btn" data-value="ofensivo">Ofensivo</div>
-          </div>
-        </div>
-
-        <!-- Game Mode -->
-        <div class="input-group">
-          <label>Modo de Jogo</label>
-          <div class="config-options" id="mode-options">
-            <div class="config-btn selected" data-value="classic">Clássico</div>
-            <div class="config-btn" data-value="almanac">Almanaque</div>
-            <button type="button" class="btn-mode" id="btn-mode-atual">Modo Atual (2026) ⚡</button>
-          </div>
-          <div class="mode-info-box" id="mode-desc">
-            <strong>Modo Clássico:</strong> Os ratings reais e qualidades dos jogadores são mostrados nas cartas para guiar suas decisões.
-          </div>
-        </div>
-
-        <button id="btn-start-draft" class="btn-primary btn-gold">
-          <span>Avançar para o Draft</span>
-        </button>
-      </div>
-    </section>
 
     <!-- SPA: DRAFT SCREEN -->
     <section id="tela-draft" class="screen">
@@ -360,6 +375,21 @@
           <!-- Populated by JS -->
         </div>
         <button id="btn-close-achievements" class="btn-primary" style="max-width: 150px; margin: 0 auto; padding: 10px 20px;">
+          <span>Fechar</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- RECORDS MODAL -->
+    <div class="modal-overlay" id="modal-records">
+      <div class="game-over-panel" style="max-width: 600px; border-color: var(--color-primary); box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);">
+        <h2 class="outcome-title victory" style="margin-bottom: 15px; font-size: 1.8rem; background: linear-gradient(135deg, #fff, var(--color-primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🏆 Galeria de Campeões (Recordes)</h2>
+        <div class="leaderboard-section" style="border-top: none; padding-top: 0; max-height: 280px; overflow-y: auto; margin-bottom: 20px;">
+          <ul class="leaderboard-list" id="leaderboard-list">
+            <!-- Dynamic list generated by JS -->
+          </ul>
+        </div>
+        <button id="btn-close-records" class="btn-primary" style="max-width: 150px; margin: 0 auto; padding: 10px 20px;">
           <span>Fechar</span>
         </button>
       </div>

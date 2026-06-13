@@ -366,7 +366,8 @@ function saveManagerCredentials(name) {
 function loadManagerCredentials() {
   const name = localStorage.getItem("draft26a0_lastManager");
   if (name) {
-    document.getElementById("username").value = name;
+    const input = document.getElementById("coach-name-input");
+    if (input) input.value = name;
   }
 }
 
@@ -413,50 +414,7 @@ function renderLeaderboard() {
 var currentMode = "classic"; // Global variable for current mode (Rule 2)
 
 function initConfigSelection() {
-  // Helper to attach listeners to config buttons
-  const setupToggle = (containerId, stateKey, callback) => {
-    const container = document.getElementById(containerId);
-    container.querySelectorAll(".config-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        container.querySelectorAll(".config-btn").forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-        state[stateKey] = btn.getAttribute("data-value");
-        if (callback) callback(state[stateKey]);
-      });
-    });
-  };
-
-  setupToggle("formation-options", "formation");
-  setupToggle("playstyle-options", "playstyle");
-  
-  // Custom mode options toggle to support buttons and divs, selected and active classes (Rule 2)
-  const modeContainer = document.getElementById("mode-options");
-  const modeBtns = modeContainer.querySelectorAll(".config-btn, .btn-mode");
-  modeBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      modeBtns.forEach(b => {
-        b.classList.remove("selected", "active");
-      });
-      btn.classList.add("selected", "active");
-      
-      let val = btn.getAttribute("data-value");
-      if (!val && btn.id === "btn-mode-atual") {
-        val = "atual";
-      }
-      
-      state.gameMode = val;
-      currentMode = val; // Synchronise global variable
-      
-      const desc = document.getElementById("mode-desc");
-      if (val === "classic") {
-        desc.innerHTML = `<strong>Modo Clássico:</strong> Os ratings reais e qualidades dos jogadores são mostrados nas cartas para guiar suas decisões.`;
-      } else if (val === "almanac") {
-        desc.innerHTML = `<strong>Modo Almanaque:</strong> Esconde os ratings e qualidades de cada jogador. Você deve escalar seu elenco com base na sua memória histórica!`;
-      } else if (val === "atual") {
-        desc.innerHTML = `<strong>Modo Atual (2026):</strong> Filtra o draft apenas para elencos da temporada 2025/26. Os ratings e qualidades são visíveis como no clássico.`;
-      }
-    });
-  });
+  // Config selection is now handled directly by unified lobby page listeners
 }
 
 // 6. DRAFT ENGINE
@@ -1953,8 +1911,15 @@ function restartGame() {
   const svg = document.getElementById("chemistry-lines");
   if (svg) svg.innerHTML = "";
   
-  // Transition back to config screen instantly retaining manager details
-  showScreen("tela-config");
+  // Restore lobby display visibility
+  const telaInicio = document.getElementById("tela-inicio");
+  if (telaInicio) {
+    telaInicio.style.opacity = "1";
+    telaInicio.style.pointerEvents = "all";
+    telaInicio.style.display = "flex";
+  }
+  
+  showScreen("tela-inicio");
 }
 
 // 10. EXTRA HELPERS (CHEMISTRY & TACTICS)
@@ -2164,25 +2129,69 @@ window.addEventListener("DOMContentLoaded", () => {
   // Load leaderboard initial
   renderLeaderboard();
   
-  // Setup config screen button events
-  initConfigSelection();
-  
-  // Login transition
-  document.getElementById("btn-login").addEventListener("click", () => {
-    const input = document.getElementById("username").value.trim();
-    if (!input) {
-      alert("Por favor, digite seu nome de treinador!");
-      return;
-    }
-    state.managerName = input;
-    saveManagerCredentials(input);
-    showScreen("tela-config");
+  // Tactic Cards selection toggle
+  const tacticCards = document.querySelectorAll(".tactic-card");
+  tacticCards.forEach(card => {
+    card.addEventListener("click", () => {
+      tacticCards.forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+    });
   });
   
-  // Start draft transition
-  document.getElementById("btn-start-draft").addEventListener("click", () => {
-    startDraft();
+  // Lobby Modes toggle
+  const lobbyModeBtns = document.querySelectorAll(".btn-lobby-mode");
+  lobbyModeBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      lobbyModeBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const val = btn.getAttribute("data-mode");
+      
+      const desc = document.getElementById("lobby-mode-desc");
+      if (val === "classic") {
+        desc.innerHTML = `<strong>Modo Clássico:</strong> Os ratings reais e qualidades dos jogadores são mostrados nas cartas para guiar suas decisões.`;
+      } else if (val === "almanac") {
+        desc.innerHTML = `<strong>Modo Almanaque:</strong> Esconde os ratings e qualidades de cada jogador. Você deve escalar seu elenco com base na sua memória histórica!`;
+      } else if (val === "atual") {
+        desc.innerHTML = `<strong>Modo Atual (2026):</strong> Filtra o draft apenas para elencos da temporada 2025/26. Os ratings e qualidades são visíveis como no clássico.`;
+      }
+    });
   });
+
+  // Start draft click transition
+  const iniciarDraftBtn = document.getElementById("btn-iniciar-draft");
+  if (iniciarDraftBtn) {
+    iniciarDraftBtn.addEventListener("click", () => {
+      const coachInput = document.getElementById("coach-name-input").value.trim();
+      state.managerName = coachInput || "Mister";
+      saveManagerCredentials(state.managerName);
+      
+      const activeTactic = document.querySelector(".tactic-card.active");
+      state.formation = activeTactic ? activeTactic.getAttribute("data-tactic") : "4-3-3";
+      
+      const activeMode = document.querySelector(".btn-lobby-mode.active");
+      const modeVal = activeMode ? activeMode.getAttribute("data-mode") : "classic";
+      state.gameMode = modeVal;
+      currentMode = modeVal;
+      
+      // Default playstyle to equilibrado
+      state.playstyle = "equilibrado";
+      
+      // Play sound
+      playDrawSound();
+      
+      // Fade out landing page
+      const telaInicio = document.getElementById("tela-inicio");
+      if (telaInicio) {
+        telaInicio.style.opacity = "0";
+        telaInicio.style.pointerEvents = "none";
+        setTimeout(() => {
+          telaInicio.style.display = "none";
+          // Start draft directly
+          startDraft();
+        }, 800);
+      }
+    });
+  }
   
   // Skip click
   const skipBtn = document.getElementById("btn-skip-team");
@@ -2201,32 +2210,13 @@ window.addEventListener("DOMContentLoaded", () => {
   // Recalculate chemistry lines on resize (Rule 1)
   window.addEventListener("resize", drawChemistryLines);
   
-  // Landing Page smooth transition (Rule 4)
-  const iniciarJogoBtn = document.getElementById("btn-iniciar-jogo");
-  if (iniciarJogoBtn) {
-    iniciarJogoBtn.addEventListener("click", () => {
-      const telaInicio = document.getElementById("tela-inicio");
-      if (telaInicio) {
-        telaInicio.style.opacity = "0";
-        telaInicio.style.pointerEvents = "none";
-        setTimeout(() => {
-          telaInicio.style.display = "none";
-          const telaLogin = document.getElementById("tela-login");
-          if (telaLogin) {
-            telaLogin.classList.add("active");
-          }
-        }, 800);
-      }
-    });
-  }
-
   // Restart click
   document.getElementById("btn-restart").addEventListener("click", () => {
     restartGame();
   });
   
   // Achievements Modal bindings
-  const showAchBtn = document.getElementById("btn-show-achievements");
+  const showAchBtn = document.getElementById("btn-lobby-achievements");
   if (showAchBtn) {
     showAchBtn.addEventListener("click", () => {
       renderAchievements();
@@ -2238,6 +2228,22 @@ window.addEventListener("DOMContentLoaded", () => {
   if (closeAchBtn) {
     closeAchBtn.addEventListener("click", () => {
       document.getElementById("modal-achievements").classList.remove("active");
+    });
+  }
+
+  // Records Modal bindings
+  const showRecordsBtn = document.getElementById("btn-lobby-records");
+  if (showRecordsBtn) {
+    showRecordsBtn.addEventListener("click", () => {
+      renderLeaderboard();
+      document.getElementById("modal-records").classList.add("active");
+    });
+  }
+  
+  const closeRecordsBtn = document.getElementById("btn-close-records");
+  if (closeRecordsBtn) {
+    closeRecordsBtn.addEventListener("click", () => {
+      document.getElementById("modal-records").classList.remove("active");
     });
   }
   
