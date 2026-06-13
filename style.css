@@ -1634,4 +1634,163 @@ body.goal-flash-active {
   animation: slimeDripAnim 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
+/* ==========================================================================
+   LANDING PAGE STYLING (RULE 3 & UI/UX PRO MAX)
+   ========================================================================== */
+.landing-page-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #050a30;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 20px;
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
+}
+
+/* 3D Field lines perspective projection */
+.landing-page-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.04;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><rect x='5' y='5' width='90' height='90' fill='none' stroke='%23ffffff' stroke-width='0.5'/><line x1='5' y1='50' x2='95' y2='50' stroke='%23ffffff' stroke-width='0.5'/><circle cx='50' cy='50' r='15' fill='none' stroke='%23ffffff' stroke-width='0.5'/><rect x='30' y='5' width='40' height='15' fill='none' stroke='%23ffffff' stroke-width='0.5'/><rect x='30' y='80' width='40' height='15' fill='none' stroke='%23ffffff' stroke-width='0.5'/></svg>");
+  background-size: 100% 100%;
+  transform: perspective(600px) rotateX(45deg) scale(1.35);
+  transform-origin: center bottom;
+  z-index: 0;
+}
+
+.landing-logo {
+  font-size: clamp(2.5rem, 6vw, 4.2rem);
+  font-weight: 800;
+  letter-spacing: 5px;
+  background: linear-gradient(135deg, #ffffff 40%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+  filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.45));
+  text-align: center;
+  z-index: 1;
+  animation: landingFadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes landingFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.96);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.landing-card {
+  background: rgba(10, 15, 40, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 30px;
+  width: 100%;
+  max-width: 550px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 35px;
+  z-index: 1;
+  animation: zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.landing-mode-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 14px;
+}
+
+.landing-mode-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.landing-mode-item h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.landing-mode-item:nth-child(1) h3 {
+  color: var(--color-secondary);
+}
+
+.landing-mode-item:nth-child(2) h3 {
+  color: #fff;
+}
+
+.landing-mode-item:nth-child(3) h3 {
+  color: var(--color-primary);
+}
+
+.landing-mode-item p {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+#btn-iniciar-jogo {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #0077ff 100%);
+  color: var(--color-bg-deep);
+  border: none;
+  border-radius: 50px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  padding: 16px 55px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: var(--font-main);
+  animation: playPulse 2.5s infinite ease-in-out;
+  outline: none;
+}
+
+#btn-iniciar-jogo:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.75), 0 8px 25px rgba(0, 0, 0, 0.6);
+  background: linear-gradient(135deg, #00ff87 0%, var(--color-primary) 100%);
+}
+
+#btn-iniciar-jogo:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+@keyframes playPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(0, 240, 255, 0.65);
+  }
+}
+
 

@@ -824,7 +824,7 @@ function renderCandidates() {
     let ratingDisplay = "";
     let ratingClass = "rating";
     
-    if (state.gameMode === "classic") {
+    if (state.gameMode === "classic" || state.gameMode === "atual") {
       cardClass = isGold ? "card-ouro gold-tier" : "card-comum";
       ratingDisplay = player.rating;
     } else {
@@ -937,7 +937,7 @@ function handleSlotClick(slot) {
   let ratingDisplay = "";
   let ratingClass = "rating";
   
-  if (state.gameMode === "classic") {
+  if (state.gameMode === "classic" || state.gameMode === "atual") {
     cardClass = isGold ? "card-ouro gold-tier" : "card-comum";
     ratingDisplay = finalPlayer.rating;
   } else {
@@ -2201,6 +2201,25 @@ window.addEventListener("DOMContentLoaded", () => {
   // Recalculate chemistry lines on resize (Rule 1)
   window.addEventListener("resize", drawChemistryLines);
   
+  // Landing Page smooth transition (Rule 4)
+  const iniciarJogoBtn = document.getElementById("btn-iniciar-jogo");
+  if (iniciarJogoBtn) {
+    iniciarJogoBtn.addEventListener("click", () => {
+      const telaInicio = document.getElementById("tela-inicio");
+      if (telaInicio) {
+        telaInicio.style.opacity = "0";
+        telaInicio.style.pointerEvents = "none";
+        setTimeout(() => {
+          telaInicio.style.display = "none";
+          const telaLogin = document.getElementById("tela-login");
+          if (telaLogin) {
+            telaLogin.classList.add("active");
+          }
+        }, 800);
+      }
+    });
+  }
+
   // Restart click
   document.getElementById("btn-restart").addEventListener("click", () => {
     restartGame();
