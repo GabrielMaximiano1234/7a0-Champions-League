@@ -79,7 +79,8 @@ const teamColors = {
   "Marseille": { primaria: "#00a2e8", secundaria: "#ffffff", primaryRGB: "0, 162, 232", secondaryRGB: "255, 255, 255" },
   "Sevilla": { primaria: "#d41910", secundaria: "#ffffff", primaryRGB: "212, 25, 16", secondaryRGB: "255, 255, 255" },
   "Benfica": { primaria: "#e30613", secundaria: "#ffffff", primaryRGB: "227, 6, 19", secondaryRGB: "255, 255, 255" },
-  "Juventus": { primaria: "#ffffff", secundaria: "#000000", primaryRGB: "255, 255, 255", secondaryRGB: "0, 0, 0" }
+  "Juventus": { primaria: "#ffffff", secundaria: "#000000", primaryRGB: "255, 255, 255", secondaryRGB: "0, 0, 0" },
+  "Lama FC": { primaria: "#8d6e63", secundaria: "#3e2723", primaryRGB: "141, 110, 99", secondaryRGB: "62, 39, 35" }
 };
 const CLUB_COLORS = teamColors;
 const DEFAULT_COLORS = { primaria: "#00e5ff", secundaria: "#ffd700", primaryRGB: "0, 229, 255", secondaryRGB: "255, 215, 0" };
@@ -1076,8 +1077,9 @@ function initTournament() {
 
 function setupStandingsData() {
   // For group stage, we simulate 4 teams: User and 3 random opponents
+  const userName = state.gameMode === "career" ? "Lama FC" : "Meu Time";
   state.groupStandings = [
-    { name: "Meu Time", pts: 0, pj: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0, isUser: true },
+    { name: userName, pts: 0, pj: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0, isUser: true },
     { name: state.opponentsList[0], pts: 0, pj: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0 },
     { name: state.opponentsList[1], pts: 0, pj: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0 },
     { name: state.opponentsList[2], pts: 0, pj: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0 }
@@ -1139,7 +1141,7 @@ function setupMatch(round) {
   document.getElementById("sim-time-ticker").innerText = "00'";
   document.getElementById("sim-scoreboard").innerText = "0 - 0";
   
-  document.getElementById("sim-user-name").innerText = state.managerName || "Meu Time";
+  document.getElementById("sim-user-name").innerText = state.gameMode === "career" ? "Lama FC" : (state.managerName || "Meu Time");
   const userAvg = parseInt(document.getElementById("roster-avg-rating").innerText) || 85;
   const userChem = parseInt(document.getElementById("roster-chemistry").innerText) || 50;
   document.getElementById("sim-user-rating").innerText = `Rating: ${userAvg} | Chem: ${userChem}%`;
@@ -2109,7 +2111,7 @@ function generateGenericPlayer(pos) {
     name: `${firstName} ${lastName}`,
     pos: pos,
     rating: rating,
-    originTeam: "Base do Clube"
+    originTeam: "Lama FC"
   };
 }
 
