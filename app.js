@@ -1188,9 +1188,9 @@ function renderGroupTable() {
   });
   
   let html = `
-    <table style="width:100%; font-size:0.8rem; border-collapse:collapse; text-align:left;">
+    <table style="width:100%; font-size:0.8rem; border-collapse:collapse; text-align:left; color:#111111;">
       <thead>
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.1); color:var(--color-text-muted);">
+        <tr style="border-bottom:2px solid #111111; color:#555555; font-family:'Anton', sans-serif; text-transform:uppercase; letter-spacing:0.5px;">
           <th style="padding:6px 0;">Clube</th>
           <th>PJ</th>
           <th>Pts</th>
@@ -1201,12 +1201,15 @@ function renderGroupTable() {
   `;
   
   sorted.forEach((team, idx) => {
-    const isHighlight = team.isUser ? 'style="color: var(--color-primary); font-weight:bold; background: rgba(0, 240, 255, 0.05);"' : '';
+    const rowStyle = team.isUser 
+      ? 'style="border-bottom:1px dashed rgba(17,17,17,0.15); font-weight:bold; background:#fffae6; color:#111111;"' 
+      : 'style="border-bottom:1px dashed rgba(17,17,17,0.15); color:#111111;"';
+    
     html += `
-      <tr ${isHighlight} style="border-bottom:1px dashed rgba(255,255,255,0.03);">
+      <tr ${rowStyle}>
         <td style="padding:8px 0; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${idx + 1}. ${team.name.split(" ")[0]}</td>
         <td>${team.pj}</td>
-        <td style="font-weight:bold; color:var(--color-secondary);">${team.pts}</td>
+        <td style="font-weight:bold; color:${team.isUser ? '#c29b38' : '#111111'};">${team.pts}</td>
         <td>${team.sg > 0 ? '+' + team.sg : team.sg}</td>
       </tr>
     `;
@@ -2089,10 +2092,10 @@ function renderAchievements() {
   container.innerHTML = achievements.map(ach => {
     const isUnlocked = unlocked.includes(ach.id);
     return `
-      <div class="achievement-item ${isUnlocked ? 'unlocked' : 'locked'}" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border-radius: 12px; background: ${isUnlocked ? 'rgba(255, 215, 0, 0.1)' : 'rgba(255, 255, 255, 0.02)'}; border: 1.5px solid ${isUnlocked ? 'var(--color-secondary)' : 'rgba(255, 255, 255, 0.08)'}; box-shadow: ${isUnlocked ? '0 0 10px rgba(255, 215, 0, 0.2)' : 'none'};">
+      <div class="achievement-item ${isUnlocked ? 'unlocked' : 'locked'}" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border-radius: 12px; background: ${isUnlocked ? 'rgba(255, 215, 0, 0.1)' : '#ffffff'}; border: 2.5px solid #111111; box-shadow: 4px 4px 0px #111111;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
-          <strong style="font-size: 0.95rem; color: ${isUnlocked ? 'var(--color-secondary)' : '#fff'};">${ach.title}</strong>
-          <span style="font-size: 0.8rem; color: var(--color-text-muted);">${ach.desc}</span>
+          <strong style="font-size: 0.95rem; color: ${isUnlocked ? '#c29b38' : '#111111'};">${ach.title}</strong>
+          <span style="font-size: 0.8rem; color: #555555;">${ach.desc}</span>
         </div>
         <div style="font-size: 1.5rem;">${isUnlocked ? '🔓' : '🔒'}</div>
       </div>

@@ -2792,3 +2792,61 @@ body {
   color: #2e7d32 !important;
   font-weight: bold !important;
 }
+
+/* ==========================================================================
+   CORREÇÃO DE LEGIBILIDADE E CONTRASTE RETRÔ (Bug Texto Branco no Creme)
+   ========================================================================== */
+/* Forçar texto escuro sobre o fundo creme de forma estrita (Regra 1) */
+p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-desc, .tracker-label, .log-entry {
+  color: #111111 !important;
+}
+
+/* Preservação de texto claro sobre elementos escuros (Regra 2) */
+.btn-retro-play, .btn-retro-start, .btn-play-primary, .btn-primary, #btn-iniciar-fluxo, #btn-iniciar-draft, #btn-action-match, #btn-restart, #btn-close-achievements, #btn-close-records, #btn-copy-lineup, .btn-retro-play span, .btn-primary span {
+  color: #f4efe2 !important;
+  background-color: #111111 !important;
+}
+
+.btn-primary:hover, .btn-gold:hover, .btn-skip:hover, .btn-lobby-mode:hover, .tactic-card:hover, .btn-play-primary:hover, .tactic-btn:hover, #btn-action-match:hover, #btn-restart:hover, #btn-close-achievements:hover, #btn-close-records:hover, #btn-copy-lineup:hover, .btn-retro-play:hover {
+  background-color: #ffd700 !important; /* turns gold on hover */
+  color: #111111 !important; /* dark text on hover */
+}
+.btn-primary:hover span, .btn-play-primary:hover span, .btn-retro-play:hover span {
+  color: #111111 !important;
+}
+
+/* Tags de jogador sobre o campinho verde (Regra 2) */
+.retro-player, .soccer-pitch, .soccer-pitch * {
+  color: #ffffff !important;
+  text-shadow: 1px 1px 2px #000000 !important;
+}
+
+/* Badges e Tickers com fundo escuro */
+.time-ticker, .player-card .position, .log-entry .minute {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+/* Input do Nome do Técnico (Regra 3) */
+#coach-name-input {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border: 2.5px solid #111111 !important;
+  box-shadow: 4px 4px 0px #111111 !important;
+  border-radius: 8px !important;
+  font-weight: bold !important;
+  padding: 12px 15px !important;
+}
+
+#coach-name-input::placeholder {
+  color: #777777 !important;
+  opacity: 0.8;
+}
+
+#coach-name-input:focus {
+  outline: none !important;
+  border-color: #c29b38 !important;
+  box-shadow: 4px 4px 0px #c29b38 !important;
+  background-color: #ffffff !important;
+}
