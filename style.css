@@ -2850,3 +2850,89 @@ p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-d
   box-shadow: 4px 4px 0px #c29b38 !important;
   background-color: #ffffff !important;
 }
+
+/* ==========================================================================
+   CORREÇÃO CRÍTICA DE TAMANHOS E PADDING NOS CARDS (ÁLBUM DE FIGURINHAS)
+   ========================================================================== */
+/* Box-sizing estrito e Flexbox de distribuição simétrica */
+.player-card, .player-card * {
+  box-sizing: border-box !important;
+}
+
+.player-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* Padding de segurança interna (Regra 1) */
+.selection-card-container .player-card {
+  padding: 10px !important;
+}
+
+.pitch-slot .player-card {
+  padding: 6px 4px !important;
+}
+
+/* Ajuste inteligente do nome do jogador com quebra e clamp (Regra 2) */
+.player-card .name {
+  font-family: 'Anton', sans-serif !important;
+  font-size: clamp(0.58rem, 1.8vw, 0.78rem) !important;
+  line-height: 1.05 !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+  text-align: center !important;
+  margin: 3px 0 !important;
+  width: 100% !important;
+  color: #111111 !important;
+}
+
+/* Proporção de altura máxima das camisas SVG (Regra 3) */
+.selection-card-container .player-card svg {
+  height: 48px !important;
+  width: 48px !important;
+  max-height: 48px !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+.pitch-slot .player-card svg {
+  height: 32px !important;
+  width: 32px !important;
+  max-height: 32px !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* Ajustes de badges de cabeçalho e rodapé */
+.player-card .card-header-info {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 2px !important;
+}
+
+.player-card .position {
+  font-size: clamp(0.48rem, 1.2vw, 0.6rem) !important;
+  padding: 1.5px 4px !important;
+  line-height: 1 !important;
+}
+
+.player-card .card-footer {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  margin-top: auto !important;
+}
+
+.player-card .team-name {
+  margin-top: 1px !important;
+  line-height: 1.1 !important;
+}
