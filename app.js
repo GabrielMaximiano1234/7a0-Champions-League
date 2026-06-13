@@ -1987,8 +1987,19 @@ const CAREER_REWARDS = {
   }
 };
 
-const rewardsWin = Array(150000, 250000, 400000, 600000, 1200000);
-const rewardsLoss = Array(20000, 30000, 30000, 30000, 30000);
+const rewardsWin = Array();
+rewardsWin.push(150000);
+rewardsWin.push(250000);
+rewardsWin.push(400000);
+rewardsWin.push(600000);
+rewardsWin.push(1200000);
+
+const rewardsLoss = Array();
+rewardsLoss.push(20000);
+rewardsLoss.push(30000);
+rewardsLoss.push(30000);
+rewardsLoss.push(30000);
+rewardsLoss.push(30000);
 
 function getPhaseIndex(stage) {
   if (stage <= 3) return 0;

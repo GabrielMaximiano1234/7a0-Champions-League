@@ -3125,3 +3125,8 @@ p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-d
   border: 4px double #ffd700 !important;
   box-shadow: 4px 4px 0px #111111, 0 0 10px rgba(255, 215, 0, 0.4) !important;
 }
+
+/* Force Creme Retro Background globally on body and pages */
+body, #tela-inicio, #tela-config, #tela-carreira, .screen, .lobby-section {
+  background-color: #f4efe2 !important;
+}
