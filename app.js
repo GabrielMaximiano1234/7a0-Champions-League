@@ -399,7 +399,7 @@ function renderLeaderboard() {
     else if (index === 1) trophy = "🥈";
     else if (index === 2) trophy = "🥉";
     
-    const perfectBadge = s.perfect ? `<span style="color: var(--color-secondary); font-weight: bold;">[26-0 Perfeito!]</span>` : "";
+    const perfectBadge = s.perfect ? `<span style="color: var(--color-secondary); font-weight: bold;">[26a0 Perfeito!]</span>` : "";
     return `
       <li class="leaderboard-item">
         <span><span class="rank">${trophy} #${index + 1}</span> ${s.name} ${perfectBadge}</span>
@@ -1908,7 +1908,7 @@ function triggerGameOver(isWinner, reason) {
     
     if (state.perfectCleanSheetRun) {
       box.classList.add("perfect-run");
-      titleEl.innerText = "Lenda do 26-0!";
+      titleEl.innerText = "Lenda do 26a0!";
       titleEl.className = "outcome-title victory";
       descEl.innerHTML = `
         🏆 <strong>DESAFIO PERFEITO CONCLUÍDO!</strong> 🏆<br><br>
@@ -1920,7 +1920,7 @@ function triggerGameOver(isWinner, reason) {
       titleEl.className = "outcome-title victory";
       descEl.innerHTML = `
         Você ergueu a Taça de Ouro da Liga de Elite após 7 batalhas intensas!<br><br>
-        No entanto, seu time sofreu gol(s) durante a jornada e não completou o desafio perfeito a zero (26-0).<br>
+        No entanto, seu time sofreu gol(s) durante a jornada e não completou o desafio perfeito a zero (26a0).<br>
         Que tal tentar novamente para cravar o placar perfeito?
       `;
     }
@@ -2132,7 +2132,7 @@ function copyTacticalLineup() {
     return p ? `${slot.label}: ${p.name} (${p.rating} | ${p.originTeam})` : `${slot.label}: Vago`;
   }).join("\n");
   
-  const textToCopy = `🏆 Liga de Elite Draft 26-0 🏆\n` +
+  const textToCopy = `🏆 Liga de Elite Draft 26a0 🏆\n` +
                      `⚽ Treinador: ${state.managerName}\n` +
                      `📐 Formação: ${state.formation}\n` +
                      `🔥 Química: ${document.getElementById("roster-chemistry").innerText}\n` +
