@@ -1911,7 +1911,16 @@ function restartGame() {
   const svg = document.getElementById("chemistry-lines");
   if (svg) svg.innerHTML = "";
   
-  // Restore lobby display visibility
+  // Reset configurations screen state
+  const telaConfig = document.getElementById("tela-config");
+  if (telaConfig) {
+    telaConfig.style.display = "none";
+    telaConfig.style.opacity = "0";
+    telaConfig.classList.add("hidden");
+    telaConfig.style.pointerEvents = "all";
+  }
+  
+  // Restore splash screen display visibility
   const telaInicio = document.getElementById("tela-inicio");
   if (telaInicio) {
     telaInicio.style.opacity = "1";
@@ -2157,6 +2166,33 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Splash screen transition to configuration lobby
+  const iniciarFluxoBtn = document.getElementById("btn-iniciar-fluxo");
+  if (iniciarFluxoBtn) {
+    iniciarFluxoBtn.addEventListener("click", () => {
+      playDrawSound();
+      
+      const telaInicio = document.getElementById("tela-inicio");
+      if (telaInicio) {
+        telaInicio.style.opacity = "0";
+        telaInicio.style.pointerEvents = "none";
+        setTimeout(() => {
+          telaInicio.style.display = "none";
+          
+          const telaConfig = document.getElementById("tela-config");
+          if (telaConfig) {
+            telaConfig.style.display = "flex";
+            telaConfig.classList.remove("hidden");
+            telaConfig.style.opacity = "0";
+            void telaConfig.offsetWidth;
+            telaConfig.style.transition = "opacity 0.6s ease";
+            telaConfig.style.opacity = "1";
+          }
+        }, 600);
+      }
+    });
+  }
+
   // Start draft click transition
   const iniciarDraftBtn = document.getElementById("btn-iniciar-draft");
   if (iniciarDraftBtn) {
@@ -2179,16 +2215,17 @@ window.addEventListener("DOMContentLoaded", () => {
       // Play sound
       playDrawSound();
       
-      // Fade out landing page
-      const telaInicio = document.getElementById("tela-inicio");
-      if (telaInicio) {
-        telaInicio.style.opacity = "0";
-        telaInicio.style.pointerEvents = "none";
+      // Fade out configurations page
+      const telaConfig = document.getElementById("tela-config");
+      if (telaConfig) {
+        telaConfig.style.opacity = "0";
+        telaConfig.style.pointerEvents = "none";
         setTimeout(() => {
-          telaInicio.style.display = "none";
+          telaConfig.style.display = "none";
+          telaConfig.classList.add("hidden");
           // Start draft directly
           startDraft();
-        }, 800);
+        }, 600);
       }
     });
   }
