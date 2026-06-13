@@ -1987,6 +1987,9 @@ const CAREER_REWARDS = {
   }
 };
 
+const rewardsWin = [150000, 150000, 150000, 250000, 400000, 600000, 1200000];
+const rewardsLoss = [20000, 20000, 20000, 30000, 30000, 30000, 30000];
+
 function getStageName(stage) {
   if (stage === 1) return "Fase de Grupos (Jogo 1)";
   if (stage === 2) return "Fase de Grupos (Jogo 2)";
@@ -2541,7 +2544,7 @@ function handleCareerMatchCompletion(userGoals, oppGoals) {
   
   if (isGroup) {
     if (userGoals > oppGoals) {
-      reward = CAREER_REWARDS.group.win;
+      reward = rewardsWin[stage - 1];
       title = "VITÓRIA!";
       message = "Excelente resultado na Fase de Grupos! Seu time garantiu 3 pontos cruciais.";
       success = true;
@@ -2551,7 +2554,7 @@ function handleCareerMatchCompletion(userGoals, oppGoals) {
       message = "Um jogo tenso e disputado na Fase de Grupos. 1 ponto garantido.";
       success = true;
     } else {
-      reward = CAREER_REWARDS.group.loss;
+      reward = rewardsLoss[stage - 1];
       title = "DERROTA!";
       message = "A derrota dói, mas a premiação de participação ajuda a reestruturar o elenco.";
       success = false;
@@ -2559,7 +2562,7 @@ function handleCareerMatchCompletion(userGoals, oppGoals) {
   } else {
     if (userGoals > oppGoals) {
       success = true;
-      reward = CAREER_REWARDS.knockout[stage] || 250000;
+      reward = rewardsWin[stage - 1];
       if (stage === 4) {
         title = "CLASSIFICADO!";
         message = "Parabéns! Seu time avançou para as Quartas de Final da Liga de Elite.";
@@ -2574,7 +2577,7 @@ function handleCareerMatchCompletion(userGoals, oppGoals) {
         message = "GLÓRIA ETERNA! Você conquistou a Taça de Ouro da Liga de Elite!";
       }
     } else {
-      reward = 30000;
+      reward = rewardsLoss[stage - 1];
       title = "ELIMINADO!";
       message = "Fim do sonho! Seu time foi desclassificado no mata-mata da Liga de Elite.";
       success = false;
