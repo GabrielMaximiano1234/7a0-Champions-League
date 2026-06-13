@@ -1973,6 +1973,20 @@ function restartGame() {
 }
 
 // 9.5. COACH CAREER MODE ENGINE
+const CAREER_REWARDS = {
+  group: {
+    win: 150000,
+    draw: 60000,
+    loss: 20000
+  },
+  knockout: {
+    4: 250000,   // Oitavas
+    5: 400000,   // Quartas
+    6: 600000,   // Semifinal
+    7: 1200000   // Final
+  }
+};
+
 function getStageName(stage) {
   if (stage === 1) return "Fase de Grupos (Jogo 1)";
   if (stage === 2) return "Fase de Grupos (Jogo 2)";
@@ -2527,17 +2541,17 @@ function handleCareerMatchCompletion(userGoals, oppGoals) {
   
   if (isGroup) {
     if (userGoals > oppGoals) {
-      reward = 150000;
+      reward = CAREER_REWARDS.group.win;
       title = "VITÓRIA!";
       message = "Excelente resultado na Fase de Grupos! Seu time garantiu 3 pontos cruciais.";
       success = true;
     } else if (userGoals === oppGoals) {
-      reward = 60000;
+      reward = CAREER_REWARDS.group.draw;
       title = "EMPATE!";
       message = "Um jogo tenso e disputado na Fase de Grupos. 1 ponto garantido.";
       success = true;
     } else {
-      reward = 20000;
+      reward = CAREER_REWARDS.group.loss;
       title = "DERROTA!";
       message = "A derrota dói, mas a premiação de participação ajuda a reestruturar o elenco.";
       success = false;
@@ -2545,20 +2559,17 @@ function handleCareerMatchCompletion(userGoals, oppGoals) {
   } else {
     if (userGoals > oppGoals) {
       success = true;
+      reward = CAREER_REWARDS.knockout[stage] || 250000;
       if (stage === 4) {
-        reward = 250000;
         title = "CLASSIFICADO!";
         message = "Parabéns! Seu time avançou para as Quartas de Final da Liga de Elite.";
       } else if (stage === 5) {
-        reward = 400000;
         title = "CLASSIFICADO!";
         message = "Incrível! Vaga garantida na Semifinal da Liga de Elite.";
       } else if (stage === 6) {
-        reward = 600000;
         title = "VAGA NA FINAL!";
         message = "Sensacional! Seu clube está a um jogo da glória máxima.";
       } else if (stage === 7) {
-        reward = 1200000;
         title = "CAMPEÃO SUPREMO!";
         message = "GLÓRIA ETERNA! Você conquistou a Taça de Ouro da Liga de Elite!";
       }
