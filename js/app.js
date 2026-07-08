@@ -718,7 +718,7 @@ function nextDraftRound(skippedTeamName = null) {
   // Fallback if we couldn't find unique players (extreme edge case)
   if (!drawnTeam) {
     alert("Erro ao sortear elenco histórico. Reiniciando...");
-    showScreen("tela-config");
+    restartGame();
     return;
   }
   
