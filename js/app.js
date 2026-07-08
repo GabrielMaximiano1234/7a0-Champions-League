@@ -639,13 +639,21 @@ function initStars() {
 // 4. NAVIGATION SYSTEM
 function showScreen(screenId) {
   // Hide active screen
-  const current = document.getElementById(state.activeScreen);
-  if (current) current.classList.remove("active");
+  if (state.activeScreen) {
+    const current = document.getElementById(state.activeScreen);
+    if (current) {
+      current.classList.remove("active");
+      current.classList.add("hidden");
+      current.style.display = "none";
+    }
+  }
   
   // Show new screen
   const target = document.getElementById(screenId);
   if (target) {
     target.classList.add("active");
+    target.classList.remove("hidden");
+    target.style.display = ""; // Clears inline 'none' to let CSS display style apply
     state.activeScreen = screenId;
   }
 }
@@ -2340,6 +2348,67 @@ function copyTacticalLineup() {
   });
 }
 
+// --- DEFESAS NULAS CONTRA ERROS DE EXECUÇÃO (BLINDAGEM TOTAL) ---
+function safeBind(id, event, callback) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener(event, callback);
+  } else {
+    console.warn(`[Defesa Oficina de Apps] Elemento com ID '${id}' não encontrado na página.`);
+  }
+}
+
+let activeTab = "trophies";
+
+function iniciarNovoCampeonato() {
+  if (!currentUser) {
+    alert("❌ Faça login ou cadastro para iniciar a copa!");
+    return;
+  }
+  
+  state.managerName = currentUser.username;
+  
+  const activeTactic = document.querySelector(".tactic-card.active");
+  state.formation = activeTactic ? activeTactic.getAttribute("data-tactic") : "4-3-3";
+  
+  const classicToggle = document.getElementById("mode-classic-toggle");
+  const modeVal = (classicToggle && classicToggle.checked) ? "classic" : "almanac";
+  state.gameMode = modeVal;
+  currentMode = modeVal;
+  
+  // Default playstyle to equilibrado
+  state.playstyle = "equilibrado";
+  
+  // Play sound
+  playDrawSound();
+  
+  // Show drafting screen
+  showScreen("tela-draft");
+  
+  // Transition from dashboard lobby to active gameplay
+  const mainLobby = document.getElementById("lobby-and-leaderboard");
+  if (mainLobby) {
+    mainLobby.style.display = "none";
+    mainLobby.classList.add("hidden");
+  }
+  
+  const activeGameplay = document.getElementById("active-gameplay-area");
+  if (activeGameplay) {
+    activeGameplay.style.display = "block";
+    activeGameplay.classList.remove("hidden");
+  }
+  
+  // Start draft directly
+  startDraft();
+}
+
+function executarSimulacaoMatch() {
+  const actionBtn = document.getElementById("btn-action-match") || document.getElementById("btn-simulate-match");
+  if (actionBtn && actionBtn.onclick) {
+    actionBtn.onclick();
+  }
+}
+
 // 12. ENTRY POINT / EVENT LISTENERS
 window.addEventListener("DOMContentLoaded", () => {
   // Initialize starfield
@@ -2348,135 +2417,65 @@ window.addEventListener("DOMContentLoaded", () => {
   // Load session
   initSession();
 
-  // Botão de Cadastro/Login
-  const btnSignup = document.getElementById("btn-submit-signup");
-  if (btnSignup) {
-    btnSignup.addEventListener("click", registerUser);
-  }
-
-  // Botão de Logout
-  const btnLogout = document.getElementById("btn-user-logout");
-  if (btnLogout) {
-    btnLogout.addEventListener("click", logoutUser);
-  }
-
-  // Tactic Cards selection toggle
+  // Gerencia cliques em táticas prevenindo erros
   const tacticCards = document.querySelectorAll(".tactic-card");
   tacticCards.forEach(card => {
     card.addEventListener("click", () => {
       tacticCards.forEach(c => c.classList.remove("active"));
       card.classList.add("active");
+      state.formation = card.getAttribute("data-tactic") || "4-3-3";
     });
   });
+
+  // Associação blindada de eventos (nunca quebra a execução)
+  safeBind("btn-submit-signup", "click", registerUser);
+  safeBind("btn-user-logout", "click", logoutUser);
+  safeBind("btn-start-championship-draft", "click", iniciarNovoCampeonato);
+  safeBind("btn-simulate-match", "click", executarSimulacaoMatch);
+  safeBind("btn-action-match", "click", executarSimulacaoMatch);
+  safeBind("btn-restart-from-win", "click", resetParaProximaCampanha);
+  safeBind("btn-restart-from-loss", "click", resetParaProximaCampanha);
+
+  // Skip clicks
+  safeBind("btn-skip-team", "click", skipTeam);
+  safeBind("btn-skip-year", "click", skipYear);
   
-  // Leaderboard tabs toggle
-  const tabBtns = document.querySelectorAll(".tab-btn");
-  tabBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      tabBtns.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      currentLeaderboardTab = btn.getAttribute("data-tab");
+  // Notebook copy
+  safeBind("btn-copy-lineup", "click", copyTacticalLineup);
+
+  // Achievements Modal bindings
+  safeBind("btn-lobby-achievements", "click", () => {
+    renderAchievements();
+    const modal = document.getElementById("modal-achievements");
+    if (modal) modal.classList.add("active");
+  });
+  
+  safeBind("btn-close-achievements", "click", () => {
+    const modal = document.getElementById("modal-achievements");
+    if (modal) modal.classList.remove("active");
+  });
+
+  // Abas do Leaderboard
+  const tabs = ["trophies", "titles", "goals"];
+  tabs.forEach(tab => {
+    safeBind(`tab-btn-${tab}`, "click", () => {
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (btn) btn.classList.remove("active");
+      });
+      const activeBtn = document.getElementById(`tab-btn-${tab}`);
+      if (activeBtn) activeBtn.classList.add("active");
+      activeTab = tab;
+      currentLeaderboardTab = tab; // Keep sync
       renderLeaderboard();
     });
   });
 
-  // Start championship draft click transition
-  const startChampionshipBtn = document.getElementById("btn-start-championship-draft");
-  if (startChampionshipBtn) {
-    startChampionshipBtn.addEventListener("click", () => {
-      if (!currentUser) {
-        alert("❌ Faça login ou cadastro para iniciar a copa!");
-        return;
-      }
-      
-      state.managerName = currentUser.username;
-      
-      const activeTactic = document.querySelector(".tactic-card.active");
-      state.formation = activeTactic ? activeTactic.getAttribute("data-tactic") : "4-3-3";
-      
-      const classicToggle = document.getElementById("mode-classic-toggle");
-      const modeVal = (classicToggle && classicToggle.checked) ? "classic" : "almanac";
-      state.gameMode = modeVal;
-      currentMode = modeVal;
-      
-      // Default playstyle to equilibrado
-      state.playstyle = "equilibrado";
-      
-      // Play sound
-      playDrawSound();
-      
-      // Show drafting screen
-      showScreen("tela-draft");
-      
-      // Transition from dashboard lobby to active gameplay
-      const mainLobby = document.getElementById("lobby-and-leaderboard");
-      if (mainLobby) {
-        mainLobby.style.display = "none";
-        mainLobby.classList.add("hidden");
-      }
-      
-      const activeGameplay = document.getElementById("active-gameplay-area");
-      if (activeGameplay) {
-        activeGameplay.style.display = "block";
-        activeGameplay.classList.remove("hidden");
-      }
-      
-      // Start draft directly
-      startDraft();
-    });
-  }
-  
-  // Skip click
-  const skipBtn = document.getElementById("btn-skip-team");
-  if (skipBtn) {
-    skipBtn.addEventListener("click", skipTeam);
-  }
-  
-  const skipYearBtn = document.getElementById("btn-skip-year");
-  if (skipYearBtn) {
-    skipYearBtn.addEventListener("click", skipYear);
-  }
-  
-  // Live tactics button initialization (Rule 3)
+  // Live tactics button initialization
   initLiveTacticsEvents();
   
-  // Recalculate chemistry lines on resize (Rule 1)
+  // Recalculate chemistry lines on resize
   window.addEventListener("resize", drawChemistryLines);
-  
-  // Restart clicks
-  const btnRestartWin = document.getElementById("btn-restart-from-win");
-  if (btnRestartWin) {
-    btnRestartWin.addEventListener("click", resetParaProximaCampanha);
-  }
-  
-  const btnRestartLoss = document.getElementById("btn-restart-from-loss");
-  if (btnRestartLoss) {
-    btnRestartLoss.addEventListener("click", resetParaProximaCampanha);
-  }
-  
-  // Achievements Modal bindings
-  const showAchBtn = document.getElementById("btn-lobby-achievements");
-  if (showAchBtn) {
-    showAchBtn.addEventListener("click", () => {
-      renderAchievements();
-      document.getElementById("modal-achievements").classList.add("active");
-    });
-  }
-  
-  const closeAchBtn = document.getElementById("btn-close-achievements");
-  if (closeAchBtn) {
-    closeAchBtn.addEventListener("click", () => {
-      document.getElementById("modal-achievements").classList.remove("active");
-    });
-  }
-  
-  // Tactical Notebook Copy binding
-  const copyBtn = document.getElementById("btn-copy-lineup");
-  if (copyBtn) {
-    copyBtn.addEventListener("click", () => {
-      copyTacticalLineup();
-    });
-  }
   
   // Twinkle stars periodically resizing
   window.addEventListener("resize", initStars);
