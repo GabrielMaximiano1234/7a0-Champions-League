@@ -4,14 +4,15 @@
 
 // Competidores Virtuais Iniciais para o Leaderboard Global
 const defaultRivals = [
-  { username: "Pep_Tactician", trophies: 1650 },
-  { username: "Zagallo_Tri", trophies: 1500 },
-  { username: "Soberano_Tele", trophies: 1400 },
-  { username: "SpecialOne_Mou", trophies: 1250 },
-  { username: "Ancelotti_Don", trophies: 1100 }
+  { username: "Pep_Tactician", trophies: 1650, titles: 12, goals: 112 },
+  { username: "Zagallo_Tri", trophies: 1500, titles: 10, goals: 95 },
+  { username: "Soberano_Tele", trophies: 1400, titles: 8, goals: 88 },
+  { username: "SpecialOne_Mou", trophies: 1250, titles: 6, goals: 74 },
+  { username: "Ancelotti_Don", trophies: 1100, titles: 5, goals: 65 }
 ];
 
 let currentUser = null;
+let currentLeaderboardTab = "trophies";
 
 function initSession() {
   const savedSession = JSON.parse(localStorage.getItem("champions_current_user"));
@@ -28,12 +29,10 @@ function initSession() {
       screenGameDashboard.style.display = "block";
     }
     
-    const coachNameEl = document.getElementById("hud-coach-name");
-    if (coachNameEl) coachNameEl.innerText = currentUser.username;
+    state.activeScreen = "lobby-and-leaderboard";
+    showScreen("lobby-and-leaderboard");
     
-    const userTrophiesEl = document.getElementById("hud-user-trophies");
-    if (userTrophiesEl) userTrophiesEl.innerText = currentUser.trophies;
-    
+    updateHudInfo();
     renderLeaderboard();
   } else {
     const screenGameDashboard = document.getElementById("screen-game-dashboard");
@@ -78,7 +77,9 @@ function registerUser() {
       username: usernameInput,
       email: emailInput,
       password: simpleHash,
-      trophies: 1000 // Elo Inicial Padrão
+      trophies: 1000, // Elo Inicial Padrão
+      titles: 0,
+      goals: 0
     };
     users.push(currentUser);
     localStorage.setItem("champions_registered_users", JSON.stringify(users));
@@ -92,30 +93,19 @@ function isUserExists(users, email) {
   return users.some(u => u.email === email);
 }
 
-function updateTrophies(amount) {
+function updateHudInfo() {
   if (!currentUser) return;
-
-  currentUser.trophies += amount;
-  if (currentUser.trophies < 0) currentUser.trophies = 0; // Impede pontuação negativa
-
-  // Salva no perfil logado
-  localStorage.setItem("champions_current_user", JSON.stringify(currentUser));
-
-  // Sincroniza com a tabela geral
-  const users = JSON.parse(localStorage.getItem("champions_registered_users")) || [];
-  const idx = users.findIndex(u => u.email === currentUser.email);
-  if (idx !== -1) {
-    users[idx].trophies = currentUser.trophies;
-    localStorage.setItem("champions_registered_users", JSON.stringify(users));
-  }
-
+  const coachNameEl = document.getElementById("hud-coach-name");
+  if (coachNameEl) coachNameEl.innerText = currentUser.username;
+  
   const trophiesEl = document.getElementById("hud-user-trophies");
-  if (trophiesEl) trophiesEl.innerText = currentUser.trophies;
-  renderLeaderboard();
-
-  // Toast de Feedback de Ganho de Prestígio
-  const feedbackMsg = amount >= 0 ? `🏆 +${amount} Troféus conquistados!` : `❌ ${Math.abs(amount)} Troféus perdidos!`;
-  alert(`${feedbackMsg}\nSua classificação atualizada foi salva no servidor local.`);
+  if (trophiesEl) trophiesEl.innerText = currentUser.trophies || 0;
+  
+  const titlesEl = document.getElementById("hud-user-titles");
+  if (titlesEl) titlesEl.innerText = currentUser.titles || 0;
+  
+  const goalsEl = document.getElementById("hud-user-goals");
+  if (goalsEl) goalsEl.innerText = currentUser.goals || 0;
 }
 
 function renderLeaderboard() {
@@ -130,16 +120,39 @@ function renderLeaderboard() {
   let combinedList = [...defaultRivals];
   registeredUsers.forEach(reg => {
     if (!combinedList.some(r => r.username === reg.username)) {
-      combinedList.push({ username: reg.username, trophies: reg.trophies });
+      combinedList.push({
+        username: reg.username,
+        trophies: reg.trophies || 0,
+        titles: reg.titles || 0,
+        goals: reg.goals || 0
+      });
     } else {
       // Atualiza os dados do usuário atual para evitar duplicados
       const index = combinedList.findIndex(r => r.username === reg.username);
-      combinedList[index].trophies = reg.trophies;
+      combinedList[index].trophies = reg.trophies || 0;
+      combinedList[index].titles = reg.titles || 0;
+      combinedList[index].goals = reg.goals || 0;
     }
   });
 
-  // Ordena por quantidade de troféus decrescente (do maior pro menor)
-  combinedList.sort((a, b) => b.trophies - a.trophies);
+  // Ordena com base na aba ativa
+  let metricHeader = "Troféus";
+  if (currentLeaderboardTab === "trophies") {
+    combinedList.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
+    metricHeader = "Troféus";
+  } else if (currentLeaderboardTab === "titles") {
+    combinedList.sort((a, b) => (b.titles || 0) - (a.titles || 0));
+    metricHeader = "Títulos";
+  } else if (currentLeaderboardTab === "goals") {
+    combinedList.sort((a, b) => (b.goals || 0) - (a.goals || 0));
+    metricHeader = "Gols";
+  }
+
+  // Atualiza o cabeçalho da tabela se houver
+  const headerEl = document.getElementById("leaderboard-metric-header");
+  if (headerEl) {
+    headerEl.innerText = metricHeader;
+  }
 
   combinedList.forEach((entry, index) => {
     const tr = document.createElement("tr");
@@ -149,11 +162,21 @@ function renderLeaderboard() {
       tr.className = "current-user-row";
     }
 
+    let metricValue = entry.trophies || 0;
+    let badgeIcon = "🏆";
+    if (currentLeaderboardTab === "titles") {
+      metricValue = entry.titles || 0;
+      badgeIcon = "🥇";
+    } else if (currentLeaderboardTab === "goals") {
+      metricValue = entry.goals || 0;
+      badgeIcon = "⚽";
+    }
+
     tr.innerHTML = `
       <td>${index + 1}º</td>
       <td>${entry.username} ${isSelf ? "⭐ (Você)" : ""}</td>
       <td>
-        <div class="trophy-badge-icon">🏆 <span>${entry.trophies}</span></div>
+        <div class="trophy-badge-icon">${badgeIcon} <span>${metricValue}</span></div>
       </td>
     `;
     container.appendChild(tr);
@@ -164,6 +187,111 @@ function logoutUser() {
   localStorage.removeItem("champions_current_user");
   currentUser = null;
   initSession();
+}
+
+function resetParaProximaCampanha() {
+  // Limpa estados do campeonato e do elenco anterior
+  state.draftRound = 1;
+  state.draftRoster = {};
+  state.selectedPlayerNames.clear();
+  state.selectedCandidate = null;
+  state.skipsRemaining = 3;
+  state.yearSkipsRemaining = 3;
+  
+  state.tournamentRound = 0;
+  state.tournamentWins = 0;
+  state.tournamentPoints = 0;
+  state.goalsScored = 0;
+  state.goalsConceded = 0;
+  state.perfectCleanSheetRun = true;
+  state.groupStandings = [];
+
+  // Reset logs
+  const logBox = document.getElementById("sim-log-box");
+  if (logBox) logBox.innerHTML = '<div class="log-entry system-info">Aguardando o pontapé inicial...</div>';
+  
+  const scoreDisplay = document.getElementById("sim-scoreboard");
+  if (scoreDisplay) scoreDisplay.innerText = "0 - 0";
+  
+  const penaltyContainer = document.getElementById("sim-penalty-container");
+  if (penaltyContainer) penaltyContainer.style.display = "none";
+
+  // Retorna com segurança ao Lobby e atualiza o ranking mundial
+  showScreen("lobby-and-leaderboard");
+  
+  // Hide active gameplay, show main lobby
+  const activeGameplay = document.getElementById("active-gameplay-area");
+  if (activeGameplay) {
+    activeGameplay.style.display = "none";
+    activeGameplay.classList.add("hidden");
+  }
+  
+  const mainLobby = document.getElementById("lobby-and-leaderboard");
+  if (mainLobby) {
+    mainLobby.style.display = "grid";
+    mainLobby.classList.remove("hidden");
+  }
+  
+  renderLeaderboard();
+  updateHudInfo();
+}
+
+function processarFimDeCampeonato(isVictory) {
+  const mGoals = state.goalsScored;
+  const sGoals = state.goalsConceded;
+
+  // Grava permanentemente os gols acumulados na carreira do treinador
+  currentUser.goals = (currentUser.goals || 0) + mGoals;
+
+  if (isVictory) {
+    // Vitória: Ganha saldo de gols direto da competição
+    const trophiesChange = mGoals - sGoals;
+    currentUser.trophies = Math.max(0, (currentUser.trophies || 0) + trophiesChange);
+    currentUser.titles = (currentUser.titles || 0) + 1;
+
+    showScreen("tela-vitoria");
+    document.getElementById("victory-header-msg").innerText = `COPA CONQUISTADA COM SUCESSO!`;
+    document.getElementById("victory-desc-msg").innerHTML = `
+      <p>Você é o Campeão da Liga de Elite! Sua mente tática brilhante guiou as maiores lendas para erguer a taça.</p>
+      <div style="background: rgba(0,151,57,0.1); border-left: 4px solid var(--br-green); padding: 15px; margin: 20px 0; font-weight: 700; border-radius: 4px; text-align: left;">
+        📊 <strong>ESTATÍSTICAS DA CAMPANHA:</strong><br>
+        ⚽ Gols Marcados: ${mGoals}<br>
+        🛡️ Gols Sofridos: ${sGoals}<br>
+        📊 Saldo de Gols: ${mGoals - sGoals}
+      </div>
+    `;
+    document.getElementById("victory-payout-display").innerText = `🏆 +${trophiesChange} Troféus de Elite`;
+  } else {
+    // Derrota: Perde a quantidade de gols sofridos + penalidade fixa de 3
+    const trophiesChange = sGoals + 3;
+    currentUser.trophies = Math.max(0, (currentUser.trophies || 0) - trophiesChange);
+
+    showScreen("tela-derrota");
+    document.getElementById("defeat-header-msg").innerText = `FIM DA SUA JORNADA!`;
+    document.getElementById("defeat-desc-msg").innerHTML = `
+      <p>Infelizmente seu time foi superado em campo! Mas a Liga nunca para de girar.</p>
+      <div style="background: rgba(231,76,60,0.1); border-left: 4px solid var(--fail-red); padding: 15px; margin: 20px 0; font-weight: 700; border-radius: 4px; text-align: left;">
+        📊 <strong>ESTATÍSTICAS DA CAMPANHA:</strong><br>
+        ⚽ Gols Marcados: ${mGoals}<br>
+        🛡️ Gols Sofridos: ${sGoals}<br>
+        📊 Penalidade (Gols Sofridos + 3): -${trophiesChange} Troféus
+      </div>
+    `;
+    document.getElementById("defeat-payout-display").innerText = `❌ -${trophiesChange} Troféus`;
+  }
+
+  // Sincroniza com as contas do LocalStorage
+  localStorage.setItem("champions_current_user", JSON.stringify(currentUser));
+  const users = JSON.parse(localStorage.getItem("champions_registered_users")) || [];
+  const idx = users.findIndex(u => u.email === currentUser.email);
+  if (idx !== -1) {
+    users[idx].trophies = currentUser.trophies;
+    users[idx].titles = currentUser.titles;
+    users[idx].goals = currentUser.goals;
+    localStorage.setItem("champions_registered_users", JSON.stringify(users));
+  }
+
+  updateHudInfo();
 }
 
 // 1. SQUADS DATABASE (Loaded from champions-7-0-db-v3.js)
@@ -1235,7 +1363,7 @@ function initTournament() {
   // Setup first match details
   setupMatch(1);
   
-  showScreen("tela-torneio");
+  showScreen("tela-simulador");
 }
 
 function setupStandingsData() {
@@ -1615,14 +1743,11 @@ function endMatchSimulation(userGoals, oppGoals) {
       ptsGained = 3;
       v = 1;
       state.tournamentWins++;
-      updateTrophies(30);
     } else if (userGoals === oppGoals) {
       ptsGained = 1;
       e = 1;
-      updateTrophies(10);
     } else {
       d = 1;
-      updateTrophies(-20);
     }
     
     state.tournamentPoints += ptsGained;
@@ -1676,11 +1801,9 @@ function endMatchSimulation(userGoals, oppGoals) {
     if (userGoals > oppGoals) {
       state.tournamentWins++;
       updateTournamentUI();
-      updateTrophies(30);
       
       if (state.tournamentRound === 7) {
         // Champions!
-        updateTrophies(100);
         actionBtn.innerHTML = `<span>Ver Cerimônia de Título</span>`;
         actionBtn.onclick = () => triggerGameOver(true, "champion");
       } else {
@@ -1697,7 +1820,6 @@ function endMatchSimulation(userGoals, oppGoals) {
       actionBtn.onclick = () => simulatePenalties(userGoals, oppGoals);
     } else {
       // Lost
-      updateTrophies(-20);
       actionBtn.innerHTML = `<span>Fim do Jogo</span>`;
       actionBtn.onclick = () => triggerGameOver(false, "knockout_elimination");
     }
@@ -1983,7 +2105,6 @@ function resolvePenaltiesOutcome(uScore, oScore) {
   if (uScore > oScore) {
     state.tournamentWins++;
     updateTournamentUI();
-    updateTrophies(30);
     
     const winMsg = `Meu Time vence por ${uScore}x${oScore} nos pênaltis`;
     addLog("PEN", `🏆 FIM DE PAPO! ${winMsg}!`, "goal-event");
@@ -1992,7 +2113,6 @@ function resolvePenaltiesOutcome(uScore, oScore) {
     }
     
     if (state.tournamentRound === 7) {
-      updateTrophies(100);
       actionBtn.innerHTML = `<span>Ver Cerimônia de Título</span>`;
       actionBtn.onclick = () => triggerGameOver(true, "champion");
     } else {
@@ -2003,7 +2123,6 @@ function resolvePenaltiesOutcome(uScore, oScore) {
       };
     }
   } else {
-    updateTrophies(-20);
     const loseMsg = `${oppNameShort} vence por ${oScore}x${uScore} nos pênaltis`;
     addLog("PEN", `❌ Eliminados! ${loseMsg}.`, "goal-conceded");
     if (penaltyResultEl) {
@@ -2017,114 +2136,12 @@ function resolvePenaltiesOutcome(uScore, oScore) {
 
 // 8. GAME OVER / CHAMPION TRIGGERS
 function triggerGameOver(isWinner, reason) {
-  const modal = document.getElementById("tela-game-over");
-  const titleEl = document.getElementById("game-over-title");
-  const descEl = document.getElementById("game-over-desc");
-  const box = document.getElementById("game-over-box");
-  const trophy = document.getElementById("trophy-container");
-  
-  modal.classList.add("active");
-  
-  // Save run stats to highscores
-  const runRecord = {
-    name: state.managerName || "Treinador Anônimo",
-    wins: state.tournamentWins,
-    goalsScored: state.goalsScored,
-    goalsConceded: state.goalsConceded,
-    perfect: isWinner && state.perfectCleanSheetRun,
-    timestamp: Date.now()
-  };
-  saveHighscore(runRecord);
-  
-  if (isWinner) {
-    box.className = "game-over-panel";
-    trophy.style.display = "inline-block";
-    
-    if (state.perfectCleanSheetRun) {
-      box.classList.add("perfect-run");
-      titleEl.innerText = "Lenda do 26a0!";
-      titleEl.className = "outcome-title victory";
-      updateTrophies(150);
-      descEl.innerHTML = `
-        🏆 <strong>DESAFIO PERFEITO CONCLUÍDO!</strong> 🏆<br><br>
-        Você alcançou a glória máxima de 7 vitórias consecutivas <strong>sem sofrer nenhum gol</strong>.<br>
-        Seu time entrou para o hall dos imortais da Liga de Elite!
-      `;
-    } else {
-      titleEl.innerText = "Campeão da Liga de Elite!";
-      titleEl.className = "outcome-title victory";
-      descEl.innerHTML = `
-        Você ergueu a Taça de Ouro da Liga de Elite após 7 batalhas intensas!<br><br>
-        No entanto, seu time sofreu gol(s) durante a jornada e não completou o desafio perfeito a zero (26a0).<br>
-        Que tal tentar novamente para cravar o placar perfeito?
-      `;
-    }
-  } else {
-    box.className = "game-over-panel";
-    trophy.style.display = "none";
-    titleEl.innerText = "Fim da Linha!";
-    titleEl.className = "outcome-title defeat";
-    
-    if (reason === "group_elimination") {
-      descEl.innerHTML = `
-        Seu time foi eliminado na <strong>Fase de Grupos</strong>.<br>
-        Com apenas ${state.tournamentPoints} ponto(s) conquistados nos 3 primeiros jogos, você não conseguiu avançar para a fase eliminatória.
-      `;
-    } else {
-      descEl.innerHTML = `
-        Seu time foi eliminado no mata-mata da Liga de Elite na rodada <strong>#${state.tournamentRound}</strong>.<br>
-        A derrota eliminou suas esperanças de título. O estádio se cala, mas sempre há uma próxima temporada!
-      `;
-    }
-  }
+  processarFimDeCampeonato(isWinner);
 }
 
 // 9. RESTART GAME
 function restartGame() {
-  // Hide modal
-  document.getElementById("tela-game-over").classList.remove("active");
-  
-  // Clear chemistry lines on restart
-  const svg = document.getElementById("chemistry-lines");
-  if (svg) svg.innerHTML = "";
-  
-  // Reset all state tournament/game elements
-  state.tournamentRound = 1;
-  state.tournamentWins = 0;
-  state.tournamentPoints = 0;
-  state.goalsScored = 0;
-  state.goalsConceded = 0;
-  state.perfectCleanSheetRun = true;
-  state.groupStandings = [];
-  
-  // Hide active gameplay, show main lobby
-  const activeGameplay = document.getElementById("active-gameplay-area");
-  if (activeGameplay) {
-    activeGameplay.style.display = "none";
-    activeGameplay.classList.add("hidden");
-  }
-  
-  const mainLobby = document.getElementById("main-lobby-area");
-  if (mainLobby) {
-    mainLobby.style.display = "grid";
-    mainLobby.classList.remove("hidden");
-  }
-  
-  const dashboard = document.getElementById("screen-game-dashboard");
-  if (dashboard) {
-    dashboard.style.display = "block";
-    dashboard.classList.remove("hidden");
-  }
-  
-  // Hide other screens inside gameplay area
-  const telaDraft = document.getElementById("tela-draft");
-  if (telaDraft) {
-    telaDraft.classList.remove("active");
-  }
-  const telaTorneio = document.getElementById("tela-torneio");
-  if (telaTorneio) {
-    telaTorneio.classList.remove("active");
-  }
+  resetParaProximaCampanha();
 }
 
 // 10. EXTRA HELPERS (CHEMISTRY & TACTICS)
@@ -2352,15 +2369,14 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
   
-  // Lobby Modes toggle
-  const lobbyModeBtns = document.querySelectorAll(".btn-lobby-mode");
-  lobbyModeBtns.forEach(btn => {
+  // Leaderboard tabs toggle
+  const tabBtns = document.querySelectorAll(".tab-btn");
+  tabBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      lobbyModeBtns.forEach(b => b.classList.remove("active"));
+      tabBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      const val = btn.getAttribute("data-mode");
-      state.gameMode = val;
-      currentMode = val;
+      currentLeaderboardTab = btn.getAttribute("data-tab");
+      renderLeaderboard();
     });
   });
 
@@ -2378,8 +2394,8 @@ window.addEventListener("DOMContentLoaded", () => {
       const activeTactic = document.querySelector(".tactic-card.active");
       state.formation = activeTactic ? activeTactic.getAttribute("data-tactic") : "4-3-3";
       
-      const activeMode = document.querySelector(".btn-lobby-mode.active");
-      const modeVal = activeMode ? activeMode.getAttribute("data-mode") : "classic";
+      const classicToggle = document.getElementById("mode-classic-toggle");
+      const modeVal = (classicToggle && classicToggle.checked) ? "classic" : "almanac";
       state.gameMode = modeVal;
       currentMode = modeVal;
       
@@ -2389,8 +2405,11 @@ window.addEventListener("DOMContentLoaded", () => {
       // Play sound
       playDrawSound();
       
+      // Show drafting screen
+      showScreen("tela-draft");
+      
       // Transition from dashboard lobby to active gameplay
-      const mainLobby = document.getElementById("main-lobby-area");
+      const mainLobby = document.getElementById("lobby-and-leaderboard");
       if (mainLobby) {
         mainLobby.style.display = "none";
         mainLobby.classList.add("hidden");
@@ -2424,10 +2443,16 @@ window.addEventListener("DOMContentLoaded", () => {
   // Recalculate chemistry lines on resize (Rule 1)
   window.addEventListener("resize", drawChemistryLines);
   
-  // Restart click
-  document.getElementById("btn-restart").addEventListener("click", () => {
-    restartGame();
-  });
+  // Restart clicks
+  const btnRestartWin = document.getElementById("btn-restart-from-win");
+  if (btnRestartWin) {
+    btnRestartWin.addEventListener("click", resetParaProximaCampanha);
+  }
+  
+  const btnRestartLoss = document.getElementById("btn-restart-from-loss");
+  if (btnRestartLoss) {
+    btnRestartLoss.addEventListener("click", resetParaProximaCampanha);
+  }
   
   // Achievements Modal bindings
   const showAchBtn = document.getElementById("btn-lobby-achievements");

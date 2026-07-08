@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Draft 26a0 - Champions & Troféus 🏆</title>
+  <title>Draft 26a0 - Champions & Ranking 🏆</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
   <!-- Dynamic floating background elements -->
   <div class="floating-bg-container">
     <!-- Bola 1 -->
@@ -57,54 +58,6 @@
         <path d="M12 9L12 6M14.5 10.8l2.5-0.8M13.5 13.8l1.5 2.2M10.5 13.8l-1.5 2.2M9.5 10.8l-2.5-0.8"/>
       </svg>
     </div>
-    <!-- Estádio 2 -->
-    <div class="floating-item item-estadio">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-        <ellipse cx="12" cy="12" rx="10" ry="7"/>
-        <ellipse cx="12" cy="12" rx="8" ry="5.2"/>
-        <rect x="7" y="9.5" width="10" height="5" rx="0.5"/>
-        <line x1="12" y1="9.5" x2="12" y2="14.5"/>
-        <circle cx="12" cy="12" r="1.5"/>
-        <path d="M12 5V2M12 19v3M2 12h3M19 12h3"/>
-      </svg>
-    </div>
-    <!-- Camisa 2 -->
-    <div class="floating-item item-camisa">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 3h12l3 5-3.5 2-1 11H6.5l-1-11L2 8z"/>
-        <path d="M9 3v4a3 3 0 0 0 6 0V3"/>
-        <line x1="10" y1="10" x2="10" y2="21"/>
-        <line x1="14" y1="10" x2="14" y2="21"/>
-      </svg>
-    </div>
-    <!-- Apito 2 -->
-    <div class="floating-item item-apito">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9.5 16.5C13.5 16.5 16.5 13.5 16.5 9.5C16.5 5.5 13.5 2.5 9.5 2.5C5.5 2.5 2.5 5.5 2.5 9.5C2.5 13.5 5.5 16.5 9.5 16.5Z"/>
-        <path d="M16.5 7.5H21.5V11.5H16.5"/>
-        <path d="M2.5 9.5H6.5"/>
-        <circle cx="9.5" cy="9.5" r="2.5"/>
-        <circle cx="4.5" cy="4.5" r="1"/>
-      </svg>
-    </div>
-    <!-- Bola 3 -->
-    <div class="floating-item item-bola">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-        <polygon points="12,9 14.5,10.8 13.5,13.8 10.5,13.8 9.5,10.8"/>
-        <path d="M12 9L12 6M14.5 10.8l2.5-0.8M13.5 13.8l1.5 2.2M10.5 13.8l-1.5 2.2M9.5 10.8l-2.5-0.8"/>
-      </svg>
-    </div>
-    <!-- Camisa 3 -->
-    <div class="floating-item item-camisa">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 3h12l3 5-3.5 2-1 11H6.5l-1-11L2 8z"/>
-        <path d="M9 3v4a3 3 0 0 0 6 0V3"/>
-        <line x1="10" y1="10" x2="10" y2="21"/>
-        <line x1="14" y1="10" x2="14" y2="21"/>
-      </svg>
-    </div>
   </div>
 
   <!-- Twinkling stars background -->
@@ -112,57 +65,56 @@
   <!-- Field lines background -->
   <div class="field-lines-bg"></div>
 
-  <!-- 1. TELA DE AUTENTICAÇÃO / CADASTRO -->
+  <!-- 1. LOGIN / CADASTRO -->
   <div id="screen-auth" class="auth-container">
     <div class="auth-card">
-      <h1 style="font-family: 'Anton', sans-serif; text-align: center; color: var(--br-green); margin: 0 0 10px 0;">DRAFT ELITE</h1>
-      <p style="text-align: center; font-size: 0.9rem; font-weight: 700; color: #555; margin-bottom: 25px;">Crie seu cadastro de treinador para disputar a tabela mundial de troféus!</p>
-      
-      <div style="margin-bottom: 15px;">
-        <label style="font-weight: 900; font-size: 0.85rem;">NOME DO TREINADOR / APELIDO</label>
-        <input type="text" id="auth-username" class="lobby-input" placeholder="Ex: Mister_Canarinho">
+      <div class="hero-logo-container">
+        <span class="giant-score-title">26-0</span>
+        <div class="sub-header-banner">DRAFT CHAMPIONS</div>
+        <p class="brand-subtext">LIGA DE ELITE DRAFT & TOURNAMENT</p>
       </div>
-
-      <div style="margin-bottom: 15px;">
-        <label style="font-weight: 900; font-size: 0.85rem;">E-MAIL</label>
-        <input type="email" id="auth-email" class="lobby-input" placeholder="professor@champions.com">
+      <div class="auth-form">
+        <div class="input-group">
+          <label for="auth-username">APELIDO DO TREINADOR</label>
+          <input type="text" id="auth-username" class="lobby-input" placeholder="Ex: Professor_Mister" value="Mister">
+        </div>
+        <div class="input-group">
+          <label for="auth-email">E-MAIL</label>
+          <input type="email" id="auth-email" class="lobby-input" placeholder="professor@champions.com" value="professor@champions.com">
+        </div>
+        <div class="input-group">
+          <label for="auth-password">SENHA DO PERFIL</label>
+          <input type="password" id="auth-password" class="lobby-input" placeholder="Mínimo de 6 caracteres" value="123456">
+        </div>
+        <button type="button" class="btn-auth-action" id="btn-submit-signup">Registrar & Acessar ➔</button>
       </div>
-
-      <div style="margin-bottom: 20px;">
-        <label style="font-weight: 900; font-size: 0.85rem;">SENHA DO PERFIL</label>
-        <input type="password" id="auth-password" class="lobby-input" placeholder="Mínimo 6 caracteres">
-      </div>
-
-      <button type="button" class="btn-auth-action" id="btn-submit-signup">Registrar e Acessar ➔</button>
     </div>
   </div>
 
-  <!-- 2. PAINEL DO JOGO (LOBBY + DRAFT + SIMULADOR + RANKING) -->
+  <!-- 2. PAINEL PRINCIPAL (DASHBOARD) -->
   <div id="screen-game-dashboard" class="game-layout-panel hidden" style="display: none;">
-    
-    <!-- HUD de Controle do Usuário Logado -->
-    <header style="display: flex; justify-content: space-between; align-items: center; background: white; border: 3px solid #111; padding: 15px; border-radius: 12px; margin-bottom: 25px; box-shadow: 6px 6px 0px var(--br-green); flex-wrap: wrap; gap: 15px;">
-      <div>
-        <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-size: 1.5rem; color: var(--br-blue);">COPA DRAFT 26A0</h2>
-        <p style="margin: 3px 0 0 0; font-size: 0.85rem; font-weight: 700; color: #555;">Treinador: <strong id="hud-coach-name">Mister</strong></p>
-      </div>
-      <div style="display: flex; gap: 15px; align-items: center;">
-        <div class="user-hud-badge">
-          🏆 Troféus: <span id="hud-user-trophies">1000</span>
+    <header class="dashboard-header">
+      <div class="header-brand-box">
+        <div class="mini-score-logo">26-0</div>
+        <div>
+          <h2>LIGA DE ELITE</h2>
+          <p>Técnico: <strong id="hud-coach-name">Mister</strong></p>
         </div>
-        <button type="button" id="btn-user-logout" style="background: white; border: 2.5px solid #111; padding: 8px 15px; border-radius: 6px; font-weight: 900; cursor: pointer;">Sair ❌</button>
+      </div>
+      <div class="header-stats-row">
+        <div class="hud-stat-badge">🏆 Troféus: <span id="hud-user-trophies">1000</span></div>
+        <div class="hud-stat-badge">🥇 Títulos: <span id="hud-user-titles">0</span></div>
+        <div class="hud-stat-badge">⚽ Gols: <span id="hud-user-goals">0</span></div>
+        <button type="button" id="btn-user-logout" class="btn-logout">Sair ❌</button>
       </div>
     </header>
 
-    <div style="display: grid; grid-template-columns: 1fr; gap: 30px;" id="main-lobby-area">
-      
-      <!-- Seletor de Táticas e Início de Campanha -->
-      <div class="lobby-card" style="margin: 0;">
-        <h3 style="font-family: 'Anton', sans-serif; margin-top: 0; font-size: 1.6rem; color: var(--br-green);">NOVA JORNADA DA LIGA</h3>
-        <p style="font-size: 0.95rem; font-weight: 700; color: #555; margin-bottom: 20px;">Cada partida vale troféus de prestígio. Conquiste o campeonato perfeito (7 a 0) para ganhar bônus monumentais!</p>
-        
+    <div id="lobby-and-leaderboard" class="dashboard-grid screen active">
+      <div class="lobby-card">
+        <h3 class="card-section-title">NOVA JORNADA DA LIGA</h3>
+        <p class="card-section-desc">Escale sua seleção e dispute partidas decisivas. Cada gol define seus troféus acumulados!</p>
         <div class="lobby-group">
-          <label style="font-weight: 900; font-size: 0.85rem;">ESQUEMA TÁTICO</label>
+          <label>ESQUEMA TÁTICO</label>
           <div class="tactic-grid">
             <div class="tactic-card active" data-tactic="4-3-3">
               <div class="mini-pitch">
@@ -179,9 +131,7 @@
                 <div class="mini-player" style="top: 20%; left: 82%;"></div>
               </div>
               <div class="tactic-name">4-3-3</div>
-              <div class="tactic-desc" style="font-size: 0.65rem; color: #666; font-weight: bold; margin-top: 2px;">Ataque Canarinho</div>
             </div>
-            
             <div class="tactic-card" data-tactic="4-4-2">
               <div class="mini-pitch">
                 <div class="mini-player" style="top: 85%; left: 50%;"></div>
@@ -197,9 +147,7 @@
                 <div class="mini-player" style="top: 20%; left: 67%;"></div>
               </div>
               <div class="tactic-name">4-4-2</div>
-              <div class="tactic-desc" style="font-size: 0.65rem; color: #666; font-weight: bold; margin-top: 2px;">Equilíbrio Histórico</div>
             </div>
-            
             <div class="tactic-card" data-tactic="3-5-2">
               <div class="mini-pitch">
                 <div class="mini-player" style="top: 85%; left: 50%;"></div>
@@ -215,65 +163,56 @@
                 <div class="mini-player" style="top: 20%; left: 67%;"></div>
               </div>
               <div class="tactic-name">3-5-2</div>
-              <div class="tactic-desc" style="font-size: 0.65rem; color: #666; font-weight: bold; margin-top: 2px;">Solidez & Alas</div>
             </div>
           </div>
         </div>
-
-        <div class="lobby-group" style="margin-top: 20px;">
-          <label style="font-weight: 900; font-size: 0.85rem;">MODO DE JOGO</label>
-          <div class="lobby-modes-container" style="display: flex; gap: 10px; margin-top: 5px;">
-            <button type="button" class="btn-lobby-mode active" data-mode="classic" style="flex: 1;">
-              <span>🏆 Clássico</span>
-              <small style="display: block; font-size: 0.65rem; text-transform: none; font-weight: normal; margin-top: 2px;">Ratings visíveis</small>
-            </button>
-            <button type="button" class="btn-lobby-mode" data-mode="almanac" style="flex: 1;">
-              <span>📖 Almanaque</span>
-              <small style="display: block; font-size: 0.65rem; text-transform: none; font-weight: normal; margin-top: 2px;">Ratings ocultos</small>
-            </button>
-            <button type="button" class="btn-lobby-mode btn-mode-atual" id="btn-lobby-mode-atual" data-mode="atual" style="flex: 1;">
-              <span>⚡ Atual (2026)</span>
-              <small style="display: block; font-size: 0.65rem; text-transform: none; font-weight: normal; margin-top: 2px;">Temporada 2025/26</small>
-            </button>
+        <div class="lobby-group">
+          <div class="toggle-container">
+            <div>
+              <div style="font-weight: 900; font-size: 0.95rem;">Modo Clássico</div>
+              <div style="font-size: 0.75rem; color: #555;">Exibir ratings e qualidades das lendas européias.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="mode-classic-toggle" checked>
+              <span class="slider"></span>
+            </label>
           </div>
         </div>
-
-        <!-- Galeria de Conquistas Toggle -->
         <div style="margin-top: 20px; display: flex; justify-content: flex-start;">
-          <button type="button" id="btn-lobby-achievements" class="btn-skip" style="border-color: var(--br-blue); color: var(--br-blue); padding: 8px 15px; font-size: 0.85rem;">🏆 Galeria de Conquistas</button>
+          <button type="button" id="btn-lobby-achievements" class="btn-skip" style="border-color: var(--br-blue); color: var(--br-blue); padding: 8px 15px; font-size: 0.85rem; background: transparent; cursor: pointer; font-weight: bold; border-radius: 6px;">🏆 Galeria de Conquistas</button>
         </div>
-
-        <button type="button" id="btn-start-championship-draft" class="btn-auth-action" style="background-color: var(--br-green) !important;">Iniciar Convocação do Time ➔</button>
+        <button type="button" id="btn-start-championship-draft" class="btn-action-primary">INICIAR CONVOCAÇÃO ➔</button>
       </div>
 
-      <!-- Tabela Global de Troféus (Leaderboard) -->
-      <div class="lobby-card" style="margin: 0;">
-        <h3 style="font-family: 'Anton', sans-serif; margin-top: 0; font-size: 1.6rem; color: var(--br-blue);">TABELA GLOBAL DE TROFÉUS (LEADERBOARD)</h3>
-        <p style="font-size: 0.85rem; font-weight: 700; color: #555;">Suba no ranking desafiando a máquina e acumulando campanhas vitoriosas!</p>
-        
-        <table class="leaderboard-table">
-          <thead>
-            <tr>
-              <th style="width: 15%">Rank</th>
-              <th>Treinador</th>
-              <th style="width: 35%">Troféus acumulados</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-entries-container">
-            <!-- Linhas inseridas dinamicamente pelo JS -->
-          </tbody>
-        </table>
+      <div class="lobby-card leaderboard-card">
+        <h3 class="card-section-title">PLACAR GLOBAL DA LIGA</h3>
+        <p class="card-section-desc">Alcance a glória liderando as tabelas competitivas mundiais!</p>
+        <div class="leaderboard-tabs">
+          <button type="button" class="tab-btn active" data-tab="trophies">🏆 Mais Troféus</button>
+          <button type="button" class="tab-btn" data-tab="titles">🥇 Mais Títulos</button>
+          <button type="button" class="tab-btn" data-tab="goals">⚽ Mais Gols</button>
+        </div>
+        <div class="leaderboard-table-container">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th style="width: 15%">Rank</th>
+                <th>Treinador</th>
+                <th id="leaderboard-metric-header" style="width: 35%">Troféus</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-entries-container"></tbody>
+          </table>
+        </div>
       </div>
-
     </div>
 
-    <!-- O contêiner de Draft do Campinho e Simulador deve herdar este grid ou ser revelado dinamicamente -->
+    <!-- O contêiner de Draft e Simulador -->
     <div id="active-gameplay-area" class="hidden" style="display: none; margin-top: 20px;">
       
-      <!-- SPA: DRAFT SCREEN -->
+      <!-- TELA DE DRAFT (CONVOCAÇÃO) -->
       <section id="tela-draft" class="screen">
         <div class="draft-container">
-          
           <!-- Left Panel: Interactive Pitch -->
           <div class="draft-panel-left">
             <div class="pitch-container" id="pitch-view">
@@ -340,14 +279,12 @@
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
-      <!-- SPA: TOURNAMENT / MATCH SIMULATOR SCREEN -->
-      <section id="tela-torneio" class="screen">
+      <!-- TELA DO SIMULADOR (COPA DE ELITE) -->
+      <section id="tela-simulador" class="screen">
         <div class="tournament-layout">
-          
           <!-- Simulation Feed -->
           <div class="simulation-panel">
             <h2 class="title-accent" style="margin-bottom: 15px;">Liga de Elite <span>Simulador</span></h2>
@@ -463,43 +400,32 @@
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
-      <!-- SPA: GAME OVER / VICTORY OVERLAY MODAL -->
-      <div class="modal-overlay" id="tela-game-over">
-        <div class="game-over-panel" id="game-over-box">
-          <div class="trophy-container" id="trophy-container">
-            <!-- Interactive animated SVG trophy -->
-            <svg class="trophy-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <!-- Trophy cup and stand -->
-              <path d="M30,20 L70,20 L65,60 C63,70 57,75 50,75 C43,75 37,70 35,60 Z" fill="#FFD700" stroke="#B8860B" stroke-width="2"/>
-              <!-- Handles -->
-              <path d="M30,25 C20,25 20,45 31,45" fill="none" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
-              <path d="M70,25 C80,25 80,45 69,45" fill="none" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
-              <!-- Stem -->
-              <rect x="47" y="75" width="6" height="12" fill="#DAA520"/>
-              <!-- Base -->
-              <path d="M35,87 L65,87 L60,93 L40,93 Z" fill="#C0C0C0" stroke="#808080" stroke-width="1.5"/>
-              <!-- Crown elements on victory -->
-              <circle cx="50" cy="12" r="3" fill="#FFD700"/>
-            </svg>
-            <div class="trophy-sparkle" style="top:10px; left:20px; width:6px; height:6px; --delay: 0.2s;"></div>
-            <div class="trophy-sparkle" style="top:30px; right:15px; width:8px; height:8px; --delay: 0.7s;"></div>
-            <div class="trophy-sparkle" style="bottom:20px; left:30px; width:5px; height:5px; --delay: 1.1s;"></div>
-          </div>
-
-          <h2 class="outcome-title" id="game-over-title">Campeão da Liga de Elite!</h2>
-          <p class="outcome-desc" id="game-over-desc">
-            Você montou uma constelação histórica, completou as 7 vitórias a zero e escreveu seu nome na história do futebol!
-          </p>
-
-          <button id="btn-restart" class="btn-giant-restart">
-            <span>🔄 Voltar ao Lobby</span>
-          </button>
+      <!-- 5. TELA DE CAMPEÃO -->
+      <section id="tela-vitoria" class="screen">
+        <div class="victory-screen">
+          <div class="victory-stars">⭐️⭐️⭐️⭐️⭐️⭐️⭐️</div>
+          <h1 class="victory-title">CAMPEÃO DA LIGA!</h1>
+          <div class="victory-text-highlight" id="victory-header-msg">PARABÉNS, PROFESSOR!</div>
+          <div class="victory-text-desc" id="victory-desc-msg"></div>
+          <div class="trophy-payout-box" id="victory-payout-display"></div>
+          <button type="button" id="btn-restart-from-win" class="btn-action-primary" style="max-width: 350px; margin: 20px auto 0;">JOGAR OUTRO CAMPEONATO 🔄</button>
         </div>
-      </div>
+      </section>
+
+      <!-- 6. TELA DE GAME OVER (ELIMINADO) -->
+      <section id="tela-derrota" class="screen">
+        <div class="victory-screen" style="border-color: var(--fail-red); box-shadow: 12px 12px 0px var(--fail-red);">
+          <div class="victory-stars">❌ ⚽ ❌</div>
+          <h1 class="victory-title" style="color: var(--fail-red); text-shadow: 2px 2px 0px #000;">FIM DE JORNADA</h1>
+          <div class="victory-text-highlight" id="defeat-header-msg">ELIMINADO DA COPA</div>
+          <div class="victory-text-desc" id="defeat-desc-msg"></div>
+          <div class="trophy-payout-box loss" id="defeat-payout-display"></div>
+          <button type="button" id="btn-restart-from-loss" class="btn-action-primary" style="max-width: 350px; margin: 20px auto 0; background-color: var(--fail-red) !important;">TENTAR NOVAMENTE 🔄</button>
+        </div>
+      </section>
 
     </div>
 

@@ -2993,7 +2993,7 @@ p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-d
 }
 
 /* ==========================================================================
-   CADASTRO, LOGIN, HUD & TABELA GLOBAL (LEADERBOARD) - DESIGN V2.4
+   CADASTRO, LOGIN, HUD & TABELA GLOBAL (LEADERBOARD MULTI-TAB) - DESIGN V2.5
    ========================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@300;400;700;900&display=swap');
 
@@ -3004,7 +3004,43 @@ p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-d
   --retro-cream: #f4efe2;
   --retro-dark: #111111;
   --light-white: #ffffff;
-  --gold-color: #ffd700;
+  --accent-gold: #c29b38;
+  --fail-red: #e74c3c;
+  --success-green: #2ecc71;
+}
+
+/* Letreiro Monumental Retro */
+.hero-logo-container {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.giant-score-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 8rem;
+  line-height: 0.8;
+  letter-spacing: -2px;
+  color: var(--retro-dark);
+  text-shadow: 6px 6px 0px var(--accent-gold), 10px 10px 0px rgba(0,0,0,0.1);
+  display: block;
+}
+
+.sub-header-banner {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 2px;
+  color: var(--br-green);
+  text-shadow: 1.5px 1.5px 0px var(--br-yellow);
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.brand-subtext {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #666;
+  letter-spacing: 1px;
+  margin-top: 5px;
 }
 
 /* Centralização do Login (Flexbox Blindado) */
@@ -3043,32 +3079,284 @@ p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-d
   z-index: 10;
 }
 
-/* Tabela Global de Troféus (Leaderboard) */
+/* Cabeçalho do Painel Geral */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border: 3px solid var(--retro-dark);
+  padding: 15px 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 6px 6px 0px var(--br-green);
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.header-brand-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-brand-box h2 {
+  margin: 0;
+  font-family: 'Anton', sans-serif;
+  font-size: 1.4rem;
+  color: var(--br-blue);
+  line-height: 1.1;
+}
+
+.header-brand-box p {
+  margin: 2px 0 0 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #555;
+}
+
+.mini-score-logo {
+  font-family: 'Anton', sans-serif;
+  font-size: 2.2rem;
+  background: var(--retro-dark);
+  color: var(--br-yellow);
+  padding: 2px 12px;
+  border-radius: 6px;
+  box-shadow: 3px 3px 0px var(--accent-gold);
+  line-height: 1;
+}
+
+.header-stats-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hud-stat-badge {
+  background: var(--retro-dark);
+  color: white;
+  border-radius: 8px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.hud-stat-badge span {
+  color: var(--br-yellow);
+  margin-left: 5px;
+}
+
+.btn-logout {
+  background: white;
+  border: 2.5px solid var(--retro-dark);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px var(--retro-dark);
+  transition: all 0.1s ease;
+}
+
+.btn-logout:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--retro-dark);
+}
+
+/* Grid do Dashboard */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 30px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lobby-card {
+  background: var(--light-white);
+  border: 3.5px solid var(--retro-dark);
+  box-shadow: 8px 8px 0px var(--br-green);
+  border-radius: 12px;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.leaderboard-card {
+  box-shadow: 8px 8px 0px var(--br-blue);
+}
+
+.card-section-title {
+  font-family: 'Anton', sans-serif;
+  margin-top: 0;
+  font-size: 1.6rem;
+  color: var(--br-green);
+  margin-bottom: 5px;
+}
+
+.leaderboard-card .card-section-title {
+  color: var(--br-blue);
+}
+
+.card-section-desc {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.lobby-group {
+  margin-bottom: 20px;
+}
+
+.lobby-group label {
+  display: block;
+  font-weight: 900;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+/* Seletor de Táticas do Novo Lobby */
+.tactic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .tactic-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Switch Toggle do Modo de Jogo */
+.toggle-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fbf9f4;
+  border: 2px solid var(--retro-dark);
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-top: 15px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .3s;
+  border: 2px solid var(--retro-dark);
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--retro-dark);
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--br-yellow);
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* Leaderboards e Abas do Placar Global */
+.leaderboard-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.tab-btn {
+  flex: 1;
+  background: white;
+  border: 2px solid var(--retro-dark);
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: 2px 2px 0px var(--retro-dark);
+}
+
+.tab-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--retro-dark);
+}
+
+.tab-btn.active {
+  background: var(--br-blue);
+  color: white;
+  border-color: var(--retro-dark);
+  box-shadow: 1px 1px 0px var(--retro-dark);
+  transform: translate(1px, 1px);
+}
+
+.leaderboard-table-container {
+  max-height: 280px;
+  overflow-y: auto;
+  border: 2.5px solid var(--retro-dark);
+  border-radius: 8px;
+}
+
 .leaderboard-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  border: 3px solid var(--retro-dark);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 6px 6px 0px var(--retro-dark);
-  margin-top: 15px;
+  font-size: 0.9rem;
 }
 
 .leaderboard-table th {
   background-color: var(--retro-dark);
   color: var(--br-yellow);
   font-family: 'Anton', sans-serif;
-  padding: 12px 15px;
+  padding: 10px 12px;
   text-align: left;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
 .leaderboard-table td {
-  background-color: var(--light-white);
-  padding: 12px 15px;
-  border-bottom: 2.5px solid var(--retro-dark);
+  padding: 10px 12px;
+  border-bottom: 1.5px solid var(--retro-dark);
   font-weight: 700;
+  background-color: white;
 }
 
 .leaderboard-table tr:last-child td {
@@ -3076,7 +3364,7 @@ p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-d
 }
 
 .leaderboard-table tr.current-user-row td {
-  background-color: #f1ebcf !important; /* Destaque Ouro Retrô para o Usuário */
+  background-color: #f1ebcf !important;
   color: var(--br-blue) !important;
 }
 
@@ -3086,28 +3374,12 @@ p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-d
   gap: 5px;
   background: var(--retro-cream);
   border: 1.5px solid var(--retro-dark);
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85rem;
 }
 
-/* Elementos do Cabeçalho e UI */
-.user-hud-badge {
-  background: var(--retro-dark);
-  color: white;
-  border-radius: 8px;
-  padding: 10px 18px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: 'Anton', sans-serif;
-  font-size: 1.1rem;
-}
-
-.user-hud-badge span {
-  color: var(--br-yellow);
-}
-
+/* Inputs de Login */
 .lobby-input {
   width: 100%;
   padding: 12px 15px;
@@ -3119,6 +3391,16 @@ p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-d
   font-weight: 700;
 }
 
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+/* Botões Globais */
 .btn-auth-action {
   width: 100%;
   background-color: var(--br-green) !important;
@@ -3139,16 +3421,86 @@ p, label, td, th, h2, h3, h4, h5, h6, .summary-label, .summary-value, .outcome-d
   box-shadow: 2px 2px 0px var(--retro-dark);
 }
 
-/* Adaptabilidade da Grid de Táticas do Novo Lobby */
-.tactic-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+.btn-action-primary {
+  width: 100%;
+  background-color: var(--br-green);
+  color: white;
+  border: 3px solid var(--retro-dark);
+  font-family: 'Anton', sans-serif;
+  font-size: 1.4rem;
+  padding: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 5px 5px 0px var(--retro-dark);
+  text-transform: uppercase;
+  margin-top: 20px;
+  transition: all 0.1s ease;
 }
 
-@media (max-width: 600px) {
-  .tactic-grid {
-    grid-template-columns: 1fr;
-  }
+.btn-action-primary:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0px var(--retro-dark);
+  background-color: #00aa3e;
+}
+
+/* Telas de Vitória e Derrota */
+.victory-screen {
+  background-color: var(--light-white);
+  border: 4px solid var(--retro-dark);
+  box-shadow: 12px 12px 0px var(--br-green);
+  border-radius: 16px;
+  padding: 45px 35px;
+  text-align: center;
+  max-width: 720px;
+  margin: 20px auto;
+  box-sizing: border-box;
+}
+
+.victory-stars {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.victory-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 3rem;
+  color: var(--br-green);
+  text-shadow: 2px 2px 0px var(--br-yellow), 4px 4px 0px var(--retro-dark);
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.victory-text-highlight {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.4rem;
+  color: var(--br-blue);
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.victory-text-desc {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 25px;
+}
+
+.trophy-payout-box {
+  background: var(--retro-cream);
+  border: 2.5px dashed var(--br-green);
+  border-radius: 10px;
+  padding: 15px 25px;
+  font-family: 'Anton', sans-serif;
+  font-size: 1.8rem;
+  color: var(--br-green);
+  margin-bottom: 30px;
+  display: inline-block;
+  min-width: 250px;
+}
+
+.trophy-payout-box.loss {
+  border-color: var(--fail-red);
+  color: var(--fail-red);
 }
 
