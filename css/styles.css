@@ -3504,3 +3504,24 @@ input:checked + .slider:before {
   color: var(--fail-red);
 }
 
+/* Stacking Context Safeguards (Clickability Fix) */
+.auth-container {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.game-layout-panel {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.modal-overlay {
+  position: fixed !important;
+  z-index: 99999 !important;
+}
+
+.floating-bg-container,
+.floating-bg-container * {
+  pointer-events: none !important;
+}
+
