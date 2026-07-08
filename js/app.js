@@ -2,7 +2,171 @@
    26 A 0 - GAME LOGIC ENGINE
    ========================================================================== */
 
-// 1. SQUADS DATABASE (Loaded from champions-7-0-db-v2.js)
+// Competidores Virtuais Iniciais para o Leaderboard Global
+const defaultRivals = [
+  { username: "Pep_Tactician", trophies: 1650 },
+  { username: "Zagallo_Tri", trophies: 1500 },
+  { username: "Soberano_Tele", trophies: 1400 },
+  { username: "SpecialOne_Mou", trophies: 1250 },
+  { username: "Ancelotti_Don", trophies: 1100 }
+];
+
+let currentUser = null;
+
+function initSession() {
+  const savedSession = JSON.parse(localStorage.getItem("champions_current_user"));
+  if (savedSession) {
+    currentUser = savedSession;
+    const screenAuth = document.getElementById("screen-auth");
+    if (screenAuth) {
+      screenAuth.classList.add("hidden");
+      screenAuth.style.display = "none";
+    }
+    const screenGameDashboard = document.getElementById("screen-game-dashboard");
+    if (screenGameDashboard) {
+      screenGameDashboard.classList.remove("hidden");
+      screenGameDashboard.style.display = "block";
+    }
+    
+    const coachNameEl = document.getElementById("hud-coach-name");
+    if (coachNameEl) coachNameEl.innerText = currentUser.username;
+    
+    const userTrophiesEl = document.getElementById("hud-user-trophies");
+    if (userTrophiesEl) userTrophiesEl.innerText = currentUser.trophies;
+    
+    renderLeaderboard();
+  } else {
+    const screenGameDashboard = document.getElementById("screen-game-dashboard");
+    if (screenGameDashboard) {
+      screenGameDashboard.classList.add("hidden");
+      screenGameDashboard.style.display = "none";
+    }
+    const screenAuth = document.getElementById("screen-auth");
+    if (screenAuth) {
+      screenAuth.classList.remove("hidden");
+      screenAuth.style.display = "flex";
+    }
+  }
+}
+
+function registerUser() {
+  const usernameInput = document.getElementById("auth-username").value.trim();
+  const emailInput = document.getElementById("auth-email").value.trim();
+  const passwordInput = document.getElementById("auth-password").value.trim();
+
+  if (!usernameInput || !emailInput || passwordInput.length < 6) {
+    alert("❌ Por favor, preencha todos os campos. A senha deve possuir pelo menos 6 caracteres!");
+    return;
+  }
+
+  // Criptografia Simples para segurança no LocalStorage
+  const simpleHash = btoa(passwordInput);
+
+  const users = JSON.parse(localStorage.getItem("champions_registered_users")) || [];
+  
+  if (isUserExists(users, emailInput)) {
+    // Se o usuário já existe, efetua o login direto
+    const existing = users.find(u => u.email === emailInput && u.password === simpleHash);
+    if (!existing) {
+      alert("❌ Senha incorreta para o e-mail informado!");
+      return;
+    }
+    currentUser = existing;
+  } else {
+    // Cria um novo usuário competitivo
+    currentUser = {
+      username: usernameInput,
+      email: emailInput,
+      password: simpleHash,
+      trophies: 1000 // Elo Inicial Padrão
+    };
+    users.push(currentUser);
+    localStorage.setItem("champions_registered_users", JSON.stringify(users));
+  }
+
+  localStorage.setItem("champions_current_user", JSON.stringify(currentUser));
+  initSession();
+}
+
+function isUserExists(users, email) {
+  return users.some(u => u.email === email);
+}
+
+function updateTrophies(amount) {
+  if (!currentUser) return;
+
+  currentUser.trophies += amount;
+  if (currentUser.trophies < 0) currentUser.trophies = 0; // Impede pontuação negativa
+
+  // Salva no perfil logado
+  localStorage.setItem("champions_current_user", JSON.stringify(currentUser));
+
+  // Sincroniza com a tabela geral
+  const users = JSON.parse(localStorage.getItem("champions_registered_users")) || [];
+  const idx = users.findIndex(u => u.email === currentUser.email);
+  if (idx !== -1) {
+    users[idx].trophies = currentUser.trophies;
+    localStorage.setItem("champions_registered_users", JSON.stringify(users));
+  }
+
+  const trophiesEl = document.getElementById("hud-user-trophies");
+  if (trophiesEl) trophiesEl.innerText = currentUser.trophies;
+  renderLeaderboard();
+
+  // Toast de Feedback de Ganho de Prestígio
+  const feedbackMsg = amount >= 0 ? `🏆 +${amount} Troféus conquistados!` : `❌ ${Math.abs(amount)} Troféus perdidos!`;
+  alert(`${feedbackMsg}\nSua classificação atualizada foi salva no servidor local.`);
+}
+
+function renderLeaderboard() {
+  const container = document.getElementById("leaderboard-entries-container");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const registeredUsers = JSON.parse(localStorage.getItem("champions_registered_users")) || [];
+  
+  // Une os rivais padrão com os usuários criados no localStorage
+  let combinedList = [...defaultRivals];
+  registeredUsers.forEach(reg => {
+    if (!combinedList.some(r => r.username === reg.username)) {
+      combinedList.push({ username: reg.username, trophies: reg.trophies });
+    } else {
+      // Atualiza os dados do usuário atual para evitar duplicados
+      const index = combinedList.findIndex(r => r.username === reg.username);
+      combinedList[index].trophies = reg.trophies;
+    }
+  });
+
+  // Ordena por quantidade de troféus decrescente (do maior pro menor)
+  combinedList.sort((a, b) => b.trophies - a.trophies);
+
+  combinedList.forEach((entry, index) => {
+    const tr = document.createElement("tr");
+    const isSelf = currentUser && entry.username === currentUser.username;
+    
+    if (isSelf) {
+      tr.className = "current-user-row";
+    }
+
+    tr.innerHTML = `
+      <td>${index + 1}º</td>
+      <td>${entry.username} ${isSelf ? "⭐ (Você)" : ""}</td>
+      <td>
+        <div class="trophy-badge-icon">🏆 <span>${entry.trophies}</span></div>
+      </td>
+    `;
+    container.appendChild(tr);
+  });
+}
+
+function logoutUser() {
+  localStorage.removeItem("champions_current_user");
+  currentUser = null;
+  initSession();
+}
+
+// 1. SQUADS DATABASE (Loaded from champions-7-0-db-v3.js)
 
 
 // Tactical slots definition per formation
@@ -1451,11 +1615,14 @@ function endMatchSimulation(userGoals, oppGoals) {
       ptsGained = 3;
       v = 1;
       state.tournamentWins++;
+      updateTrophies(30);
     } else if (userGoals === oppGoals) {
       ptsGained = 1;
       e = 1;
+      updateTrophies(10);
     } else {
       d = 1;
+      updateTrophies(-20);
     }
     
     state.tournamentPoints += ptsGained;
@@ -1509,9 +1676,11 @@ function endMatchSimulation(userGoals, oppGoals) {
     if (userGoals > oppGoals) {
       state.tournamentWins++;
       updateTournamentUI();
+      updateTrophies(30);
       
       if (state.tournamentRound === 7) {
         // Champions!
+        updateTrophies(100);
         actionBtn.innerHTML = `<span>Ver Cerimônia de Título</span>`;
         actionBtn.onclick = () => triggerGameOver(true, "champion");
       } else {
@@ -1528,6 +1697,7 @@ function endMatchSimulation(userGoals, oppGoals) {
       actionBtn.onclick = () => simulatePenalties(userGoals, oppGoals);
     } else {
       // Lost
+      updateTrophies(-20);
       actionBtn.innerHTML = `<span>Fim do Jogo</span>`;
       actionBtn.onclick = () => triggerGameOver(false, "knockout_elimination");
     }
@@ -1813,6 +1983,7 @@ function resolvePenaltiesOutcome(uScore, oScore) {
   if (uScore > oScore) {
     state.tournamentWins++;
     updateTournamentUI();
+    updateTrophies(30);
     
     const winMsg = `Meu Time vence por ${uScore}x${oScore} nos pênaltis`;
     addLog("PEN", `🏆 FIM DE PAPO! ${winMsg}!`, "goal-event");
@@ -1821,6 +1992,7 @@ function resolvePenaltiesOutcome(uScore, oScore) {
     }
     
     if (state.tournamentRound === 7) {
+      updateTrophies(100);
       actionBtn.innerHTML = `<span>Ver Cerimônia de Título</span>`;
       actionBtn.onclick = () => triggerGameOver(true, "champion");
     } else {
@@ -1831,6 +2003,7 @@ function resolvePenaltiesOutcome(uScore, oScore) {
       };
     }
   } else {
+    updateTrophies(-20);
     const loseMsg = `${oppNameShort} vence por ${oScore}x${uScore} nos pênaltis`;
     addLog("PEN", `❌ Eliminados! ${loseMsg}.`, "goal-conceded");
     if (penaltyResultEl) {
@@ -1871,6 +2044,7 @@ function triggerGameOver(isWinner, reason) {
       box.classList.add("perfect-run");
       titleEl.innerText = "Lenda do 26a0!";
       titleEl.className = "outcome-title victory";
+      updateTrophies(150);
       descEl.innerHTML = `
         🏆 <strong>DESAFIO PERFEITO CONCLUÍDO!</strong> 🏆<br><br>
         Você alcançou a glória máxima de 7 vitórias consecutivas <strong>sem sofrer nenhum gol</strong>.<br>
@@ -1914,24 +2088,43 @@ function restartGame() {
   const svg = document.getElementById("chemistry-lines");
   if (svg) svg.innerHTML = "";
   
-  // Reset configurations screen state
-  const telaConfig = document.getElementById("tela-config");
-  if (telaConfig) {
-    telaConfig.style.display = "none";
-    telaConfig.style.opacity = "0";
-    telaConfig.classList.add("hidden");
-    telaConfig.style.pointerEvents = "all";
+  // Reset all state tournament/game elements
+  state.tournamentRound = 1;
+  state.tournamentWins = 0;
+  state.tournamentPoints = 0;
+  state.goalsScored = 0;
+  state.goalsConceded = 0;
+  state.perfectCleanSheetRun = true;
+  state.groupStandings = [];
+  
+  // Hide active gameplay, show main lobby
+  const activeGameplay = document.getElementById("active-gameplay-area");
+  if (activeGameplay) {
+    activeGameplay.style.display = "none";
+    activeGameplay.classList.add("hidden");
   }
   
-  // Restore splash screen display visibility
-  const telaInicio = document.getElementById("tela-inicio");
-  if (telaInicio) {
-    telaInicio.style.opacity = "1";
-    telaInicio.style.pointerEvents = "all";
-    telaInicio.style.display = "flex";
+  const mainLobby = document.getElementById("main-lobby-area");
+  if (mainLobby) {
+    mainLobby.style.display = "grid";
+    mainLobby.classList.remove("hidden");
   }
   
-  showScreen("tela-inicio");
+  const dashboard = document.getElementById("screen-game-dashboard");
+  if (dashboard) {
+    dashboard.style.display = "block";
+    dashboard.classList.remove("hidden");
+  }
+  
+  // Hide other screens inside gameplay area
+  const telaDraft = document.getElementById("tela-draft");
+  if (telaDraft) {
+    telaDraft.classList.remove("active");
+  }
+  const telaTorneio = document.getElementById("tela-torneio");
+  if (telaTorneio) {
+    telaTorneio.classList.remove("active");
+  }
 }
 
 // 10. EXTRA HELPERS (CHEMISTRY & TACTICS)
@@ -2135,12 +2328,21 @@ window.addEventListener("DOMContentLoaded", () => {
   // Initialize starfield
   initStars();
   
-  // Load local credentials
-  loadManagerCredentials();
-  
-  // Load leaderboard initial
-  renderLeaderboard();
-  
+  // Load session
+  initSession();
+
+  // Botão de Cadastro/Login
+  const btnSignup = document.getElementById("btn-submit-signup");
+  if (btnSignup) {
+    btnSignup.addEventListener("click", registerUser);
+  }
+
+  // Botão de Logout
+  const btnLogout = document.getElementById("btn-user-logout");
+  if (btnLogout) {
+    btnLogout.addEventListener("click", logoutUser);
+  }
+
   // Tactic Cards selection toggle
   const tacticCards = document.querySelectorAll(".tactic-card");
   tacticCards.forEach(card => {
@@ -2157,52 +2359,21 @@ window.addEventListener("DOMContentLoaded", () => {
       lobbyModeBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       const val = btn.getAttribute("data-mode");
-      
-      const desc = document.getElementById("lobby-mode-desc");
-      if (val === "classic") {
-        desc.innerHTML = `<strong>Modo Clássico:</strong> Os ratings reais e qualidades dos jogadores são mostrados nas cartas para guiar suas decisões.`;
-      } else if (val === "almanac") {
-        desc.innerHTML = `<strong>Modo Almanaque:</strong> Esconde os ratings e qualidades de cada jogador. Você deve escalar seu elenco com base na sua memória histórica!`;
-      } else if (val === "atual") {
-        desc.innerHTML = `<strong>Modo Atual (2026):</strong> Filtra o draft apenas para elencos da temporada 2025/26. Os ratings e qualidades são visíveis como no clássico.`;
-      }
+      state.gameMode = val;
+      currentMode = val;
     });
   });
 
-  // Splash screen transition to configuration lobby
-  const iniciarFluxoBtn = document.getElementById("btn-iniciar-fluxo");
-  if (iniciarFluxoBtn) {
-    iniciarFluxoBtn.addEventListener("click", () => {
-      playDrawSound();
-      
-      const telaInicio = document.getElementById("tela-inicio");
-      if (telaInicio) {
-        telaInicio.style.opacity = "0";
-        telaInicio.style.pointerEvents = "none";
-        setTimeout(() => {
-          telaInicio.style.display = "none";
-          
-          const telaConfig = document.getElementById("tela-config");
-          if (telaConfig) {
-            telaConfig.style.display = "flex";
-            telaConfig.classList.remove("hidden");
-            telaConfig.style.opacity = "0";
-            void telaConfig.offsetWidth;
-            telaConfig.style.transition = "opacity 0.6s ease";
-            telaConfig.style.opacity = "1";
-          }
-        }, 600);
+  // Start championship draft click transition
+  const startChampionshipBtn = document.getElementById("btn-start-championship-draft");
+  if (startChampionshipBtn) {
+    startChampionshipBtn.addEventListener("click", () => {
+      if (!currentUser) {
+        alert("❌ Faça login ou cadastro para iniciar a copa!");
+        return;
       }
-    });
-  }
-
-  // Start draft click transition
-  const iniciarDraftBtn = document.getElementById("btn-iniciar-draft");
-  if (iniciarDraftBtn) {
-    iniciarDraftBtn.addEventListener("click", () => {
-      const coachInput = document.getElementById("coach-name-input").value.trim();
-      state.managerName = coachInput || "Mister";
-      saveManagerCredentials(state.managerName);
+      
+      state.managerName = currentUser.username;
       
       const activeTactic = document.querySelector(".tactic-card.active");
       state.formation = activeTactic ? activeTactic.getAttribute("data-tactic") : "4-3-3";
@@ -2218,18 +2389,21 @@ window.addEventListener("DOMContentLoaded", () => {
       // Play sound
       playDrawSound();
       
-      // Fade out configurations page
-      const telaConfig = document.getElementById("tela-config");
-      if (telaConfig) {
-        telaConfig.style.opacity = "0";
-        telaConfig.style.pointerEvents = "none";
-        setTimeout(() => {
-          telaConfig.style.display = "none";
-          telaConfig.classList.add("hidden");
-          // Start draft directly
-          startDraft();
-        }, 600);
+      // Transition from dashboard lobby to active gameplay
+      const mainLobby = document.getElementById("main-lobby-area");
+      if (mainLobby) {
+        mainLobby.style.display = "none";
+        mainLobby.classList.add("hidden");
       }
+      
+      const activeGameplay = document.getElementById("active-gameplay-area");
+      if (activeGameplay) {
+        activeGameplay.style.display = "block";
+        activeGameplay.classList.remove("hidden");
+      }
+      
+      // Start draft directly
+      startDraft();
     });
   }
   
@@ -2268,22 +2442,6 @@ window.addEventListener("DOMContentLoaded", () => {
   if (closeAchBtn) {
     closeAchBtn.addEventListener("click", () => {
       document.getElementById("modal-achievements").classList.remove("active");
-    });
-  }
-
-  // Records Modal bindings
-  const showRecordsBtn = document.getElementById("btn-lobby-records");
-  if (showRecordsBtn) {
-    showRecordsBtn.addEventListener("click", () => {
-      renderLeaderboard();
-      document.getElementById("modal-records").classList.add("active");
-    });
-  }
-  
-  const closeRecordsBtn = document.getElementById("btn-close-records");
-  if (closeRecordsBtn) {
-    closeRecordsBtn.addEventListener("click", () => {
-      document.getElementById("modal-records").classList.remove("active");
     });
   }
   
